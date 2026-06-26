@@ -48,7 +48,7 @@ export const Route = createFileRoute("/agendar")({
 
 type Step = "category" | "service" | "professional" | "datetime" | "client" | "payment" | "done";
 
-type ClientForm = { name: string; whatsapp: string; email: string; notes: string };
+type ClientForm = { name: string; whatsapp: string; email: string; cpf: string; birth_date: string; address: string; notes: string };
 
 type CreatedBooking = Awaited<ReturnType<typeof createBooking>>;
 
