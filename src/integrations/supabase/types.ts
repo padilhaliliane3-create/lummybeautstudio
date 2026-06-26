@@ -14,7 +14,368 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bookings: {
+        Row: {
+          client_id: string
+          code: string
+          created_at: string
+          deposit_amount: number
+          deposit_paid: boolean
+          end_time: string
+          id: string
+          notes: string | null
+          professional_id: string
+          remaining_amount: number
+          scheduled_date: string
+          service_id: string
+          start_time: string
+          status: Database["public"]["Enums"]["booking_status"]
+          total_price: number
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          code?: string
+          created_at?: string
+          deposit_amount: number
+          deposit_paid?: boolean
+          end_time: string
+          id?: string
+          notes?: string | null
+          professional_id: string
+          remaining_amount: number
+          scheduled_date: string
+          service_id: string
+          start_time: string
+          status?: Database["public"]["Enums"]["booking_status"]
+          total_price: number
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          code?: string
+          created_at?: string
+          deposit_amount?: number
+          deposit_paid?: boolean
+          end_time?: string
+          id?: string
+          notes?: string | null
+          professional_id?: string
+          remaining_amount?: number
+          scheduled_date?: string
+          service_id?: string
+          start_time?: string
+          status?: Database["public"]["Enums"]["booking_status"]
+          total_price?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      categories: {
+        Row: {
+          active: boolean
+          created_at: string
+          icon: string | null
+          id: string
+          image_url: string | null
+          name: string
+          slug: string
+          sort_order: number
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          icon?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          slug: string
+          sort_order?: number
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          icon?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          slug?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      clients: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          updated_at: string
+          whatsapp: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          updated_at?: string
+          whatsapp: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          updated_at?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
+      professional_services: {
+        Row: {
+          professional_id: string
+          service_id: string
+        }
+        Insert: {
+          professional_id: string
+          service_id: string
+        }
+        Update: {
+          professional_id?: string
+          service_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_services_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professional_services_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professionals: {
+        Row: {
+          active: boolean
+          bio: string | null
+          break_end: string | null
+          break_start: string | null
+          commission_pct: number | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          phone: string | null
+          photo_url: string | null
+          pix_key: string | null
+          rating: number | null
+          slot_minutes: number
+          specialty: string | null
+          updated_at: string
+          whatsapp: string
+          work_end: string
+          work_start: string
+          working_days: number[]
+        }
+        Insert: {
+          active?: boolean
+          bio?: string | null
+          break_end?: string | null
+          break_start?: string | null
+          commission_pct?: number | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          photo_url?: string | null
+          pix_key?: string | null
+          rating?: number | null
+          slot_minutes?: number
+          specialty?: string | null
+          updated_at?: string
+          whatsapp: string
+          work_end?: string
+          work_start?: string
+          working_days?: number[]
+        }
+        Update: {
+          active?: boolean
+          bio?: string | null
+          break_end?: string | null
+          break_start?: string | null
+          commission_pct?: number | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          photo_url?: string | null
+          pix_key?: string | null
+          rating?: number | null
+          slot_minutes?: number
+          specialty?: string | null
+          updated_at?: string
+          whatsapp?: string
+          work_end?: string
+          work_start?: string
+          working_days?: number[]
+        }
+        Relationships: []
+      }
+      salon_settings: {
+        Row: {
+          address: string | null
+          cancel_policy: string | null
+          deposit_pct: number
+          email: string | null
+          id: number
+          instagram: string | null
+          name: string
+          opening_hours: Json | null
+          whatsapp: string
+        }
+        Insert: {
+          address?: string | null
+          cancel_policy?: string | null
+          deposit_pct?: number
+          email?: string | null
+          id?: number
+          instagram?: string | null
+          name?: string
+          opening_hours?: Json | null
+          whatsapp?: string
+        }
+        Update: {
+          address?: string | null
+          cancel_policy?: string | null
+          deposit_pct?: number
+          email?: string | null
+          id?: number
+          instagram?: string | null
+          name?: string
+          opening_hours?: Json | null
+          whatsapp?: string
+        }
+        Relationships: []
+      }
+      schedule_blocks: {
+        Row: {
+          block_date: string
+          created_at: string
+          end_time: string | null
+          id: string
+          professional_id: string
+          reason: string | null
+          start_time: string | null
+        }
+        Insert: {
+          block_date: string
+          created_at?: string
+          end_time?: string | null
+          id?: string
+          professional_id: string
+          reason?: string | null
+          start_time?: string | null
+        }
+        Update: {
+          block_date?: string
+          created_at?: string
+          end_time?: string | null
+          id?: string
+          professional_id?: string
+          reason?: string | null
+          start_time?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "schedule_blocks_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      services: {
+        Row: {
+          active: boolean
+          category_id: string
+          created_at: string
+          description: string | null
+          duration_min: number
+          id: string
+          image_url: string | null
+          name: string
+          price: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          category_id: string
+          created_at?: string
+          description?: string | null
+          duration_min: number
+          id?: string
+          image_url?: string | null
+          name: string
+          price: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          category_id?: string
+          created_at?: string
+          description?: string | null
+          duration_min?: number
+          id?: string
+          image_url?: string | null
+          name?: string
+          price?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "services_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +384,12 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      booking_status:
+        | "pending_payment"
+        | "confirmed"
+        | "cancelled"
+        | "completed"
+        | "no_show"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +516,14 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      booking_status: [
+        "pending_payment",
+        "confirmed",
+        "cancelled",
+        "completed",
+        "no_show",
+      ],
+    },
   },
 } as const
