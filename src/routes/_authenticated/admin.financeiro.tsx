@@ -105,8 +105,8 @@ function FinancePage() {
                   <YAxis />
                   <Tooltip formatter={(v: any) => fmt(Number(v))} />
                   <Legend />
-                  <Bar dataKey="income" name="Receita" fill="hsl(var(--gold))" />
-                  <Bar dataKey="expense" name="Despesa" fill="hsl(var(--destructive))" />
+                  <Bar dataKey="income" name="Receita" fill="var(--gold)" />
+                  <Bar dataKey="expense" name="Despesa" fill="var(--destructive)" />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
