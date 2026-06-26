@@ -145,9 +145,13 @@ function ProForm({ value, services, onSubmit, loading }: any) {
           <input required value={v.whatsapp ?? ""} onChange={(e) => setV({ ...v, whatsapp: e.target.value })} className={inputCls} />
         </Field>
       </div>
-      <Field label="Foto (URL)">
-        <input value={v.photo_url ?? ""} onChange={(e) => setV({ ...v, photo_url: e.target.value })} className={inputCls} />
-      </Field>
+      <ImageUploader
+        label="Foto do profissional"
+        folder="profissionais"
+        value={v.photo_url ?? ""}
+        onChange={(url) => setV({ ...v, photo_url: url })}
+        aspect="square"
+      />
       <div>
         <label className="text-[10px] uppercase tracking-wide text-muted-foreground">Dias de trabalho</label>
         <div className="mt-1 flex flex-wrap gap-1">
