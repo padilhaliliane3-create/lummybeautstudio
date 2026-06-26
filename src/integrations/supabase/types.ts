@@ -128,6 +128,9 @@ export type Database = {
       }
       clients: {
         Row: {
+          address: string | null
+          birth_date: string | null
+          cpf: string | null
           created_at: string
           email: string | null
           id: string
@@ -137,6 +140,9 @@ export type Database = {
           whatsapp: string
         }
         Insert: {
+          address?: string | null
+          birth_date?: string | null
+          cpf?: string | null
           created_at?: string
           email?: string | null
           id?: string
@@ -146,6 +152,9 @@ export type Database = {
           whatsapp: string
         }
         Update: {
+          address?: string | null
+          birth_date?: string | null
+          cpf?: string | null
           created_at?: string
           email?: string | null
           id?: string
@@ -257,36 +266,63 @@ export type Database = {
       }
       salon_settings: {
         Row: {
+          about_text: string | null
           address: string | null
+          banner_url: string | null
           cancel_policy: string | null
+          company_name: string | null
           deposit_pct: number
           email: string | null
+          facebook: string | null
+          hero_subtitle: string | null
+          hero_title: string | null
+          hours_json: Json | null
           id: number
           instagram: string | null
+          logo_url: string | null
           name: string
           opening_hours: Json | null
+          phone: string | null
           whatsapp: string
         }
         Insert: {
+          about_text?: string | null
           address?: string | null
+          banner_url?: string | null
           cancel_policy?: string | null
+          company_name?: string | null
           deposit_pct?: number
           email?: string | null
+          facebook?: string | null
+          hero_subtitle?: string | null
+          hero_title?: string | null
+          hours_json?: Json | null
           id?: number
           instagram?: string | null
+          logo_url?: string | null
           name?: string
           opening_hours?: Json | null
+          phone?: string | null
           whatsapp?: string
         }
         Update: {
+          about_text?: string | null
           address?: string | null
+          banner_url?: string | null
           cancel_policy?: string | null
+          company_name?: string | null
           deposit_pct?: number
           email?: string | null
+          facebook?: string | null
+          hero_subtitle?: string | null
+          hero_title?: string | null
+          hours_json?: Json | null
           id?: number
           instagram?: string | null
+          logo_url?: string | null
           name?: string
           opening_hours?: Json | null
+          phone?: string | null
           whatsapp?: string
         }
         Relationships: []
