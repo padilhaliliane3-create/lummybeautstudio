@@ -125,7 +125,8 @@ function AuthPage() {
             });
             if (result.error) setError(result.error.message ?? "Falha no Google");
             if (result.redirected) return;
-            navigate({ to: "/admin" });
+            const { data } = await supabase.auth.getUser();
+            if (data.user) navigate({ to: await landingFor(data.user.id) });
           }}
           className="flex w-full items-center justify-center gap-2 rounded-full border border-border bg-background px-5 py-2.5 text-sm font-medium text-foreground transition hover:bg-secondary"
         >
