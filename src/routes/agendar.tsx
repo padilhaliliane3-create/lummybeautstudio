@@ -73,7 +73,7 @@ function AgendarPage() {
   const [professionalId, setProfessionalId] = useState<string | null>(null);
   const [date, setDate] = useState<string | null>(null);
   const [time, setTime] = useState<string | null>(null);
-  const [client, setClient] = useState<ClientForm>({ name: "", whatsapp: "", email: "", notes: "" });
+  const [client, setClient] = useState<ClientForm>({ name: "", whatsapp: "", email: "", cpf: "", birth_date: "", address: "", notes: "" });
   const [booking, setBooking] = useState<CreatedBooking | null>(null);
 
   const service = catalog.services.find((s) => s.id === serviceId) ?? null;
