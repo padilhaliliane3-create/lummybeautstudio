@@ -57,6 +57,9 @@ function Header() {
         </nav>
         <div className="flex items-center gap-2">
           <ThemeToggle />
+          <Link to="/cliente" className="hidden text-xs text-muted-foreground hover:text-gold sm:inline">
+            Minha área
+          </Link>
           <Link to="/auth" className="hidden text-xs text-muted-foreground hover:text-gold sm:inline">
             Entrar
           </Link>
