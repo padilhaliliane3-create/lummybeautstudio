@@ -120,7 +120,7 @@ export const getMyBookings = createServerFn({ method: "GET" })
     if (!mine.data) return [];
     const { data, error } = await sb
       .from("bookings")
-      .select("*, service:services(name,price,duration_min), professional:professionals(name,specialty,avatar_url)")
+      .select("*, service:services(name,price,duration_min), professional:professionals(name,specialty,photo_url)")
       .eq("client_id", mine.data.id)
       .order("scheduled_date", { ascending: false })
       .limit(200);
