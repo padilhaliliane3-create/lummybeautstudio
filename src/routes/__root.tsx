@@ -83,13 +83,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "Agende cabelo, unhas, cílios, sobrancelhas, estética e maquiagem no LUMMY Beauty Studio. Atendimento premium com profissionais especialistas.",
       },
-      { property: "og:title", content: "LUMMY Beauty Studio" },
+      { property: "og:title", content: "LUMMY Beauty Studio · Agendamento online" },
       {
         property: "og:description",
         content: "Reserve seu horário no LUMMY Beauty Studio em poucos cliques.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "LUMMY Beauty Studio · Agendamento online" },
+      { name: "description", content: "Um espaço criado para realçar a sua beleza, elevar sua autoestima e proporcionar momentos de cuidado e bem-estar." },
+      { property: "og:description", content: "Um espaço criado para realçar a sua beleza, elevar sua autoestima e proporcionar momentos de cuidado e bem-estar." },
+      { name: "twitter:description", content: "Um espaço criado para realçar a sua beleza, elevar sua autoestima e proporcionar momentos de cuidado e bem-estar." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/03be2efa-ddab-4683-8b52-e399cf7bbfe2" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/03be2efa-ddab-4683-8b52-e399cf7bbfe2" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
