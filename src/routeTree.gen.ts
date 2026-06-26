@@ -13,6 +13,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AgendarRouteImport } from './routes/agendar'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedClienteRouteImport } from './routes/_authenticated/cliente'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated/admin.usuarios'
@@ -43,6 +44,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedClienteRoute = AuthenticatedClienteRouteImport.update({
+  id: '/cliente',
+  path: '/cliente',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
@@ -114,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/agendar': typeof AgendarRoute
   '/auth': typeof AuthRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/cliente': typeof AuthenticatedClienteRoute
   '/admin/agenda': typeof AuthenticatedAdminAgendaRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
   '/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/agendar': typeof AgendarRoute
   '/auth': typeof AuthRoute
+  '/cliente': typeof AuthenticatedClienteRoute
   '/admin/agenda': typeof AuthenticatedAdminAgendaRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
   '/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
@@ -147,6 +155,7 @@ export interface FileRoutesById {
   '/agendar': typeof AgendarRoute
   '/auth': typeof AuthRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/cliente': typeof AuthenticatedClienteRoute
   '/_authenticated/admin/agenda': typeof AuthenticatedAdminAgendaRoute
   '/_authenticated/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
   '/_authenticated/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
@@ -165,6 +174,7 @@ export interface FileRouteTypes {
     | '/agendar'
     | '/auth'
     | '/admin'
+    | '/cliente'
     | '/admin/agenda'
     | '/admin/agendamentos'
     | '/admin/bloqueios'
@@ -180,6 +190,7 @@ export interface FileRouteTypes {
     | '/'
     | '/agendar'
     | '/auth'
+    | '/cliente'
     | '/admin/agenda'
     | '/admin/agendamentos'
     | '/admin/bloqueios'
@@ -197,6 +208,7 @@ export interface FileRouteTypes {
     | '/agendar'
     | '/auth'
     | '/_authenticated/admin'
+    | '/_authenticated/cliente'
     | '/_authenticated/admin/agenda'
     | '/_authenticated/admin/agendamentos'
     | '/_authenticated/admin/bloqueios'
@@ -245,6 +257,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/cliente': {
+      id: '/_authenticated/cliente'
+      path: '/cliente'
+      fullPath: '/cliente'
+      preLoaderRoute: typeof AuthenticatedClienteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
@@ -357,10 +376,12 @@ const AuthenticatedAdminRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+  AuthenticatedClienteRoute: typeof AuthenticatedClienteRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+  AuthenticatedClienteRoute: AuthenticatedClienteRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
