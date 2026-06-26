@@ -152,7 +152,8 @@ function AdminLayout() {
             <Menu className="h-5 w-5" />
           </button>
           <h1 className="font-display text-lg text-foreground">Painel administrativo</h1>
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-3">
+            <ThemeToggle />
             <Link
               to="/"
               className="text-xs text-muted-foreground hover:text-gold"
