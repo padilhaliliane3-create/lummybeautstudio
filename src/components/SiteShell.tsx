@@ -45,12 +45,17 @@ function Header() {
             Contato
           </a>
         </nav>
-        <Link
-          to="/agendar"
-          className="inline-flex items-center rounded-full bg-gradient-gold px-5 py-2 text-sm font-medium text-white shadow-soft transition hover:opacity-95"
-        >
-          Agendar
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link to="/auth" className="hidden text-xs text-muted-foreground hover:text-gold sm:inline">
+            Entrar
+          </Link>
+          <Link
+            to="/agendar"
+            className="inline-flex items-center rounded-full bg-gradient-gold px-5 py-2 text-sm font-medium text-white shadow-soft transition hover:opacity-95"
+          >
+            Agendar
+          </Link>
+        </div>
       </div>
     </header>
   );
