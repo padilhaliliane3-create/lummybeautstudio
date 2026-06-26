@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { CalendarDays, DollarSign, Users, Scissors } from "lucide-react";
+import { CalendarDays, DollarSign, Users, Scissors, Bell, MessageCircle } from "lucide-react";
 import { adminLoadAll, adminListBookings } from "@/lib/admin.functions";
+import { waReminderLink } from "@/lib/whatsapp";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   component: AdminDashboard,
@@ -13,6 +14,7 @@ function AdminDashboard() {
   const listBookings = useServerFn(adminListBookings);
 
   const today = new Date().toISOString().slice(0, 10);
+  const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
   const in7 = new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10);
 
   const all = useQuery({ queryKey: ["adminAll"], queryFn: () => loadAll() });
@@ -23,6 +25,10 @@ function AdminDashboard() {
   const todayList = useQuery({
     queryKey: ["bookings", "today", today],
     queryFn: () => listBookings({ data: { from: today, to: today } }),
+  });
+  const tomorrowList = useQuery({
+    queryKey: ["bookings", "tomorrow", tomorrow],
+    queryFn: () => listBookings({ data: { from: tomorrow, to: tomorrow, status: "confirmed" } }),
   });
 
   const revenue = (upcoming.data ?? [])
@@ -63,6 +69,39 @@ function AdminDashboard() {
                   <div className="font-mono">{b.start_time?.slice(0, 5)}</div>
                   <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{b.status}</div>
                 </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="rounded-xl border border-border/60 bg-card p-5">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="font-display text-xl text-foreground inline-flex items-center gap-2">
+            <Bell className="h-4 w-4 text-gold" /> Lembretes para amanhã
+          </h2>
+          <span className="text-xs text-muted-foreground">{tomorrowList.data?.length ?? 0} cliente(s)</span>
+        </div>
+        {(tomorrowList.data?.length ?? 0) === 0 ? (
+          <p className="py-6 text-center text-sm text-muted-foreground">Nenhum lembrete pendente.</p>
+        ) : (
+          <ul className="divide-y divide-border/60">
+            {tomorrowList.data!.map((b: any) => (
+              <li key={b.id} className="flex items-center justify-between gap-3 py-3 text-sm">
+                <div className="min-w-0">
+                  <div className="font-medium truncate">{b.client?.name}</div>
+                  <div className="text-xs text-muted-foreground truncate">
+                    {b.service?.name} · {b.professional?.name} · <span className="font-mono">{b.start_time?.slice(0, 5)}</span>
+                  </div>
+                </div>
+                <a
+                  href={waReminderLink(b)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex shrink-0 items-center gap-1 rounded-full bg-gradient-gold px-3 py-1.5 text-xs text-white"
+                >
+                  <MessageCircle className="h-3 w-3" /> Enviar
+                </a>
               </li>
             ))}
           </ul>

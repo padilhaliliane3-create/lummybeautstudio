@@ -48,7 +48,7 @@ export const Route = createFileRoute("/agendar")({
 
 type Step = "category" | "service" | "professional" | "datetime" | "client" | "payment" | "done";
 
-type ClientForm = { name: string; whatsapp: string; email: string; notes: string };
+type ClientForm = { name: string; whatsapp: string; email: string; cpf: string; birth_date: string; address: string; notes: string };
 
 type CreatedBooking = Awaited<ReturnType<typeof createBooking>>;
 
@@ -73,7 +73,7 @@ function AgendarPage() {
   const [professionalId, setProfessionalId] = useState<string | null>(null);
   const [date, setDate] = useState<string | null>(null);
   const [time, setTime] = useState<string | null>(null);
-  const [client, setClient] = useState<ClientForm>({ name: "", whatsapp: "", email: "", notes: "" });
+  const [client, setClient] = useState<ClientForm>({ name: "", whatsapp: "", email: "", cpf: "", birth_date: "", address: "", notes: "" });
   const [booking, setBooking] = useState<CreatedBooking | null>(null);
 
   const service = catalog.services.find((s) => s.id === serviceId) ?? null;
@@ -572,6 +572,35 @@ function ClientStep({
             inputMode="email"
           />
         </Field>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="CPF">
+            <input
+              value={client.cpf}
+              onChange={(e) => setClient({ ...client, cpf: maskCpf(e.target.value) })}
+              className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm outline-none transition focus:border-gold focus:ring-2 focus:ring-gold/20"
+              placeholder="000.000.000-00"
+              maxLength={14}
+              inputMode="numeric"
+            />
+          </Field>
+          <Field label="Data de nascimento">
+            <input
+              type="date"
+              value={client.birth_date}
+              onChange={(e) => setClient({ ...client, birth_date: e.target.value })}
+              className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm outline-none transition focus:border-gold focus:ring-2 focus:ring-gold/20"
+            />
+          </Field>
+        </div>
+        <Field label="Endereço">
+          <input
+            value={client.address}
+            onChange={(e) => setClient({ ...client, address: e.target.value })}
+            className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm outline-none transition focus:border-gold focus:ring-2 focus:ring-gold/20"
+            placeholder="Rua, número, bairro – cidade/UF"
+            maxLength={300}
+          />
+        </Field>
         <Field label="Observações">
           <textarea
             value={client.notes}
@@ -623,6 +652,9 @@ function PaymentStep({
             name: client.name,
             whatsapp: client.whatsapp.replace(/\D/g, ""),
             email: client.email,
+            cpf: client.cpf.replace(/\D/g, ""),
+            birth_date: client.birth_date,
+            address: client.address,
             notes: client.notes,
           },
         },
@@ -805,6 +837,14 @@ function SummaryCard({
  * ============================================================ */
 function brl(n: number) {
   return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+function maskCpf(v: string) {
+  const d = v.replace(/\D/g, "").slice(0, 11);
+  return d
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
 }
 
 const WEEKDAYS_SHORT = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];

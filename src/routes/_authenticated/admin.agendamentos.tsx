@@ -2,9 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Search } from "lucide-react";
+import { Search, MessageCircle, Bell, XCircle } from "lucide-react";
 import { adminLoadAll, adminListBookings, adminUpdateBookingStatus } from "@/lib/admin.functions";
 import { StatusBadge } from "./admin.agenda";
+import { waConfirmLink, waReminderLink, waCancelLink } from "@/lib/whatsapp";
 
 export const Route = createFileRoute("/_authenticated/admin/agendamentos")({
   component: BookingsPage,
@@ -128,13 +129,14 @@ function BookingsPage() {
                 <th className="px-4 py-3 text-left">Profissional</th>
                 <th className="px-4 py-3 text-right">Valor</th>
                 <th className="px-4 py-3 text-left">Status</th>
+                <th className="px-4 py-3 text-left">WhatsApp</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
             <tbody>
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="py-10 text-center text-sm text-muted-foreground">
+                  <td colSpan={9} className="py-10 text-center text-sm text-muted-foreground">
                     Nenhum agendamento encontrado.
                   </td>
                 </tr>
@@ -151,6 +153,37 @@ function BookingsPage() {
                   <td className="px-4 py-3">{b.professional?.name}</td>
                   <td className="px-4 py-3 text-right font-mono">R$ {Number(b.total_price).toFixed(2)}</td>
                   <td className="px-4 py-3"><StatusBadge status={b.status} /></td>
+                  <td className="px-4 py-3">
+                    <div className="flex gap-1">
+                      <a
+                        href={waConfirmLink(b)}
+                        target="_blank"
+                        rel="noreferrer"
+                        title="Confirmar"
+                        className="rounded p-1.5 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950"
+                      >
+                        <MessageCircle className="h-3.5 w-3.5" />
+                      </a>
+                      <a
+                        href={waReminderLink(b)}
+                        target="_blank"
+                        rel="noreferrer"
+                        title="Lembrete 24h"
+                        className="rounded p-1.5 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950"
+                      >
+                        <Bell className="h-3.5 w-3.5" />
+                      </a>
+                      <a
+                        href={waCancelLink(b)}
+                        target="_blank"
+                        rel="noreferrer"
+                        title="Cancelar"
+                        className="rounded p-1.5 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950"
+                      >
+                        <XCircle className="h-3.5 w-3.5" />
+                      </a>
+                    </div>
+                  </td>
                   <td className="px-4 py-3">
                     <select
                       value={b.status}

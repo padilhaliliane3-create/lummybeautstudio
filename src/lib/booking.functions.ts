@@ -68,6 +68,9 @@ const createBookingSchema = z.object({
     name: z.string().trim().min(2).max(120),
     whatsapp: z.string().trim().min(8).max(20),
     email: z.string().trim().email().max(160).optional().or(z.literal("")),
+    cpf: z.string().trim().max(20).optional().or(z.literal("")),
+    birth_date: z.string().optional().or(z.literal("")),
+    address: z.string().trim().max(300).optional().or(z.literal("")),
     notes: z.string().trim().max(500).optional().or(z.literal("")),
   }),
 });
@@ -119,19 +122,25 @@ export const createBooking = createServerFn({ method: "POST" })
       .eq("whatsapp", data.client.whatsapp)
       .maybeSingle();
     let clientId = existingClient.data?.id;
+    const clientPayload = {
+      name: data.client.name,
+      whatsapp: data.client.whatsapp,
+      email: data.client.email || null,
+      cpf: data.client.cpf || null,
+      birth_date: data.client.birth_date || null,
+      address: data.client.address || null,
+      notes: data.client.notes || null,
+    };
     if (!clientId) {
       const ins = await sb
         .from("clients")
-        .insert({
-          name: data.client.name,
-          whatsapp: data.client.whatsapp,
-          email: data.client.email || null,
-          notes: data.client.notes || null,
-        })
+        .insert(clientPayload)
         .select("id")
         .single();
       if (ins.error) throw ins.error;
       clientId = ins.data.id;
+    } else {
+      await sb.from("clients").update(clientPayload).eq("id", clientId);
     }
 
     const bookingIns = await sb
