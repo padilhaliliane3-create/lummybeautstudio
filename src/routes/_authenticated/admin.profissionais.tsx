@@ -8,6 +8,7 @@ import {
   adminSaveProfessional,
   adminDeleteProfessional,
 } from "@/lib/admin.functions";
+import { ImageUploader } from "@/components/ImageUploader";
 
 export const Route = createFileRoute("/_authenticated/admin/profissionais")({
   component: ProsPage,
