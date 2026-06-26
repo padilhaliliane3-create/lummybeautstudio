@@ -75,6 +75,39 @@ function AdminDashboard() {
         )}
       </section>
 
+      <section className="rounded-xl border border-border/60 bg-card p-5">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="font-display text-xl text-foreground inline-flex items-center gap-2">
+            <Bell className="h-4 w-4 text-gold" /> Lembretes para amanhã
+          </h2>
+          <span className="text-xs text-muted-foreground">{tomorrowList.data?.length ?? 0} cliente(s)</span>
+        </div>
+        {(tomorrowList.data?.length ?? 0) === 0 ? (
+          <p className="py-6 text-center text-sm text-muted-foreground">Nenhum lembrete pendente.</p>
+        ) : (
+          <ul className="divide-y divide-border/60">
+            {tomorrowList.data!.map((b: any) => (
+              <li key={b.id} className="flex items-center justify-between gap-3 py-3 text-sm">
+                <div className="min-w-0">
+                  <div className="font-medium truncate">{b.client?.name}</div>
+                  <div className="text-xs text-muted-foreground truncate">
+                    {b.service?.name} · {b.professional?.name} · <span className="font-mono">{b.start_time?.slice(0, 5)}</span>
+                  </div>
+                </div>
+                <a
+                  href={waReminderLink(b)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex shrink-0 items-center gap-1 rounded-full bg-gradient-gold px-3 py-1.5 text-xs text-white"
+                >
+                  <MessageCircle className="h-3 w-3" /> Enviar
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
       <section className="grid gap-4 lg:grid-cols-2">
         <SummaryCard title="Serviços" icon={Scissors} count={(all.data?.services ?? []).length} />
         <SummaryCard title="Categorias" icon={Scissors} count={(all.data?.categories ?? []).length} />
