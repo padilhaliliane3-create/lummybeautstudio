@@ -34,13 +34,13 @@ export const adminSaveSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => settingsSchema.parse(d))
   .handler(async ({ context, data }) => {
-    const payload: Record<string, any> = {};
+    const payload: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(data)) {
       payload[k] = v === "" ? null : v;
     }
     const { error } = await context.supabase
       .from("salon_settings")
-      .update(payload)
+      .update(payload as never)
       .eq("id", 1);
     if (error) throw error;
     return { ok: true };
