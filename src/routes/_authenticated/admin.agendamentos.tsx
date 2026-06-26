@@ -154,6 +154,37 @@ function BookingsPage() {
                   <td className="px-4 py-3 text-right font-mono">R$ {Number(b.total_price).toFixed(2)}</td>
                   <td className="px-4 py-3"><StatusBadge status={b.status} /></td>
                   <td className="px-4 py-3">
+                    <div className="flex gap-1">
+                      <a
+                        href={waConfirmLink(b)}
+                        target="_blank"
+                        rel="noreferrer"
+                        title="Confirmar"
+                        className="rounded p-1.5 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950"
+                      >
+                        <MessageCircle className="h-3.5 w-3.5" />
+                      </a>
+                      <a
+                        href={waReminderLink(b)}
+                        target="_blank"
+                        rel="noreferrer"
+                        title="Lembrete 24h"
+                        className="rounded p-1.5 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950"
+                      >
+                        <Bell className="h-3.5 w-3.5" />
+                      </a>
+                      <a
+                        href={waCancelLink(b)}
+                        target="_blank"
+                        rel="noreferrer"
+                        title="Cancelar"
+                        className="rounded p-1.5 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950"
+                      >
+                        <XCircle className="h-3.5 w-3.5" />
+                      </a>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3">
                     <select
                       value={b.status}
                       onChange={(e) => update.mutate({ id: b.id, status: e.target.value })}
