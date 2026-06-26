@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { CalendarDays, DollarSign, Users, Scissors } from "lucide-react";
+import { CalendarDays, DollarSign, Users, Scissors, Bell, MessageCircle } from "lucide-react";
 import { adminLoadAll, adminListBookings } from "@/lib/admin.functions";
+import { waReminderLink } from "@/lib/whatsapp";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   component: AdminDashboard,
@@ -13,6 +14,7 @@ function AdminDashboard() {
   const listBookings = useServerFn(adminListBookings);
 
   const today = new Date().toISOString().slice(0, 10);
+  const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
   const in7 = new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10);
 
   const all = useQuery({ queryKey: ["adminAll"], queryFn: () => loadAll() });
@@ -23,6 +25,10 @@ function AdminDashboard() {
   const todayList = useQuery({
     queryKey: ["bookings", "today", today],
     queryFn: () => listBookings({ data: { from: today, to: today } }),
+  });
+  const tomorrowList = useQuery({
+    queryKey: ["bookings", "tomorrow", tomorrow],
+    queryFn: () => listBookings({ data: { from: tomorrow, to: tomorrow, status: "confirmed" } }),
   });
 
   const revenue = (upcoming.data ?? [])
