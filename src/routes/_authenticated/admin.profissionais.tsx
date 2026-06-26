@@ -92,7 +92,7 @@ function ProsPage() {
           <ProForm
             value={editing}
             services={all.data?.services ?? []}
-            onSubmit={(v) => mSave.mutate(v, { onSuccess: () => setEditing(null) })}
+            onSubmit={(v: any) => mSave.mutate(v, { onSuccess: () => setEditing(null) })}
             loading={mSave.isPending}
           />
         </Modal>

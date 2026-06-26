@@ -138,7 +138,7 @@ function ServicesPage() {
           <ServiceForm
             value={editing}
             categories={all.data?.categories ?? []}
-            onSubmit={(v) => mSave.mutate(v, { onSuccess: () => setEditing(null) })}
+            onSubmit={(v: any) => mSave.mutate(v, { onSuccess: () => setEditing(null) })}
             loading={mSave.isPending}
           />
         </Modal>
@@ -147,7 +147,7 @@ function ServicesPage() {
         <Modal onClose={() => setEditingCat(null)} title={editingCat.id ? "Editar categoria" : "Nova categoria"}>
           <CategoryForm
             value={editingCat}
-            onSubmit={(v) => mSaveCat.mutate(v, { onSuccess: () => setEditingCat(null) })}
+            onSubmit={(v: any) => mSaveCat.mutate(v, { onSuccess: () => setEditingCat(null) })}
             loading={mSaveCat.isPending}
           />
         </Modal>
