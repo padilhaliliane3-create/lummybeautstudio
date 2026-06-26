@@ -15,7 +15,11 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedClienteRouteImport } from './routes/_authenticated/cliente'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedClienteIndexRouteImport } from './routes/_authenticated/cliente.index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedClientePerfilRouteImport } from './routes/_authenticated/cliente.perfil'
+import { Route as AuthenticatedClienteCronogramaRouteImport } from './routes/_authenticated/cliente.cronograma'
+import { Route as AuthenticatedClienteAgendamentosRouteImport } from './routes/_authenticated/cliente.agendamentos'
 import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated/admin.usuarios'
 import { Route as AuthenticatedAdminServicosRouteImport } from './routes/_authenticated/admin.servicos'
 import { Route as AuthenticatedAdminProfissionaisRouteImport } from './routes/_authenticated/admin.profissionais'
@@ -55,11 +59,35 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedClienteIndexRoute =
+  AuthenticatedClienteIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedClienteRoute,
+  } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedClientePerfilRoute =
+  AuthenticatedClientePerfilRouteImport.update({
+    id: '/perfil',
+    path: '/perfil',
+    getParentRoute: () => AuthenticatedClienteRoute,
+  } as any)
+const AuthenticatedClienteCronogramaRoute =
+  AuthenticatedClienteCronogramaRouteImport.update({
+    id: '/cronograma',
+    path: '/cronograma',
+    getParentRoute: () => AuthenticatedClienteRoute,
+  } as any)
+const AuthenticatedClienteAgendamentosRoute =
+  AuthenticatedClienteAgendamentosRouteImport.update({
+    id: '/agendamentos',
+    path: '/agendamentos',
+    getParentRoute: () => AuthenticatedClienteRoute,
+  } as any)
 const AuthenticatedAdminUsuariosRoute =
   AuthenticatedAdminUsuariosRouteImport.update({
     id: '/usuarios',
@@ -120,7 +148,7 @@ export interface FileRoutesByFullPath {
   '/agendar': typeof AgendarRoute
   '/auth': typeof AuthRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
-  '/cliente': typeof AuthenticatedClienteRoute
+  '/cliente': typeof AuthenticatedClienteRouteWithChildren
   '/admin/agenda': typeof AuthenticatedAdminAgendaRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
   '/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
@@ -130,13 +158,16 @@ export interface FileRoutesByFullPath {
   '/admin/profissionais': typeof AuthenticatedAdminProfissionaisRoute
   '/admin/servicos': typeof AuthenticatedAdminServicosRoute
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
+  '/cliente/agendamentos': typeof AuthenticatedClienteAgendamentosRoute
+  '/cliente/cronograma': typeof AuthenticatedClienteCronogramaRoute
+  '/cliente/perfil': typeof AuthenticatedClientePerfilRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/cliente/': typeof AuthenticatedClienteIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/agendar': typeof AgendarRoute
   '/auth': typeof AuthRoute
-  '/cliente': typeof AuthenticatedClienteRoute
   '/admin/agenda': typeof AuthenticatedAdminAgendaRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
   '/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
@@ -146,7 +177,11 @@ export interface FileRoutesByTo {
   '/admin/profissionais': typeof AuthenticatedAdminProfissionaisRoute
   '/admin/servicos': typeof AuthenticatedAdminServicosRoute
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
+  '/cliente/agendamentos': typeof AuthenticatedClienteAgendamentosRoute
+  '/cliente/cronograma': typeof AuthenticatedClienteCronogramaRoute
+  '/cliente/perfil': typeof AuthenticatedClientePerfilRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/cliente': typeof AuthenticatedClienteIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -155,7 +190,7 @@ export interface FileRoutesById {
   '/agendar': typeof AgendarRoute
   '/auth': typeof AuthRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
-  '/_authenticated/cliente': typeof AuthenticatedClienteRoute
+  '/_authenticated/cliente': typeof AuthenticatedClienteRouteWithChildren
   '/_authenticated/admin/agenda': typeof AuthenticatedAdminAgendaRoute
   '/_authenticated/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
   '/_authenticated/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
@@ -165,7 +200,11 @@ export interface FileRoutesById {
   '/_authenticated/admin/profissionais': typeof AuthenticatedAdminProfissionaisRoute
   '/_authenticated/admin/servicos': typeof AuthenticatedAdminServicosRoute
   '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
+  '/_authenticated/cliente/agendamentos': typeof AuthenticatedClienteAgendamentosRoute
+  '/_authenticated/cliente/cronograma': typeof AuthenticatedClienteCronogramaRoute
+  '/_authenticated/cliente/perfil': typeof AuthenticatedClientePerfilRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/cliente/': typeof AuthenticatedClienteIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -184,13 +223,16 @@ export interface FileRouteTypes {
     | '/admin/profissionais'
     | '/admin/servicos'
     | '/admin/usuarios'
+    | '/cliente/agendamentos'
+    | '/cliente/cronograma'
+    | '/cliente/perfil'
     | '/admin/'
+    | '/cliente/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/agendar'
     | '/auth'
-    | '/cliente'
     | '/admin/agenda'
     | '/admin/agendamentos'
     | '/admin/bloqueios'
@@ -200,7 +242,11 @@ export interface FileRouteTypes {
     | '/admin/profissionais'
     | '/admin/servicos'
     | '/admin/usuarios'
+    | '/cliente/agendamentos'
+    | '/cliente/cronograma'
+    | '/cliente/perfil'
     | '/admin'
+    | '/cliente'
   id:
     | '__root__'
     | '/'
@@ -218,7 +264,11 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/profissionais'
     | '/_authenticated/admin/servicos'
     | '/_authenticated/admin/usuarios'
+    | '/_authenticated/cliente/agendamentos'
+    | '/_authenticated/cliente/cronograma'
+    | '/_authenticated/cliente/perfil'
     | '/_authenticated/admin/'
+    | '/_authenticated/cliente/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -272,12 +322,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/cliente/': {
+      id: '/_authenticated/cliente/'
+      path: '/'
+      fullPath: '/cliente/'
+      preLoaderRoute: typeof AuthenticatedClienteIndexRouteImport
+      parentRoute: typeof AuthenticatedClienteRoute
+    }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/cliente/perfil': {
+      id: '/_authenticated/cliente/perfil'
+      path: '/perfil'
+      fullPath: '/cliente/perfil'
+      preLoaderRoute: typeof AuthenticatedClientePerfilRouteImport
+      parentRoute: typeof AuthenticatedClienteRoute
+    }
+    '/_authenticated/cliente/cronograma': {
+      id: '/_authenticated/cliente/cronograma'
+      path: '/cronograma'
+      fullPath: '/cliente/cronograma'
+      preLoaderRoute: typeof AuthenticatedClienteCronogramaRouteImport
+      parentRoute: typeof AuthenticatedClienteRoute
+    }
+    '/_authenticated/cliente/agendamentos': {
+      id: '/_authenticated/cliente/agendamentos'
+      path: '/agendamentos'
+      fullPath: '/cliente/agendamentos'
+      preLoaderRoute: typeof AuthenticatedClienteAgendamentosRouteImport
+      parentRoute: typeof AuthenticatedClienteRoute
     }
     '/_authenticated/admin/usuarios': {
       id: '/_authenticated/admin/usuarios'
@@ -374,14 +452,31 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
 const AuthenticatedAdminRouteWithChildren =
   AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
+interface AuthenticatedClienteRouteChildren {
+  AuthenticatedClienteAgendamentosRoute: typeof AuthenticatedClienteAgendamentosRoute
+  AuthenticatedClienteCronogramaRoute: typeof AuthenticatedClienteCronogramaRoute
+  AuthenticatedClientePerfilRoute: typeof AuthenticatedClientePerfilRoute
+  AuthenticatedClienteIndexRoute: typeof AuthenticatedClienteIndexRoute
+}
+
+const AuthenticatedClienteRouteChildren: AuthenticatedClienteRouteChildren = {
+  AuthenticatedClienteAgendamentosRoute: AuthenticatedClienteAgendamentosRoute,
+  AuthenticatedClienteCronogramaRoute: AuthenticatedClienteCronogramaRoute,
+  AuthenticatedClientePerfilRoute: AuthenticatedClientePerfilRoute,
+  AuthenticatedClienteIndexRoute: AuthenticatedClienteIndexRoute,
+}
+
+const AuthenticatedClienteRouteWithChildren =
+  AuthenticatedClienteRoute._addFileChildren(AuthenticatedClienteRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
-  AuthenticatedClienteRoute: typeof AuthenticatedClienteRoute
+  AuthenticatedClienteRoute: typeof AuthenticatedClienteRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
-  AuthenticatedClienteRoute: AuthenticatedClienteRoute,
+  AuthenticatedClienteRoute: AuthenticatedClienteRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =
