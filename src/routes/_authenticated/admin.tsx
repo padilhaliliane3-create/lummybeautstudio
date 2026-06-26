@@ -12,9 +12,13 @@ import {
   LogOut,
   Menu,
   X,
+  ShieldCheck,
+  UserCircle2,
+  Settings,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Logo } from "@/components/Logo";
+import { ThemeToggle } from "@/components/ThemeProvider";
 import { getMyRole, claimFirstAdmin } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -26,9 +30,12 @@ const nav: NavItem[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/admin/agenda", label: "Agenda", icon: Calendar },
   { to: "/admin/agendamentos", label: "Agendamentos", icon: ListChecks },
+  { to: "/admin/clientes", label: "Clientes", icon: UserCircle2 },
   { to: "/admin/servicos", label: "Serviços", icon: Scissors },
   { to: "/admin/profissionais", label: "Profissionais", icon: Users },
   { to: "/admin/bloqueios", label: "Bloqueios", icon: CalendarOff },
+  { to: "/admin/usuarios", label: "Usuários", icon: ShieldCheck },
+  { to: "/admin/configuracoes", label: "Configurações", icon: Settings },
 ];
 
 function AdminLayout() {
@@ -145,7 +152,8 @@ function AdminLayout() {
             <Menu className="h-5 w-5" />
           </button>
           <h1 className="font-display text-lg text-foreground">Painel administrativo</h1>
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-3">
+            <ThemeToggle />
             <Link
               to="/"
               className="text-xs text-muted-foreground hover:text-gold"
