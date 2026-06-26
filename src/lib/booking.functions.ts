@@ -68,6 +68,9 @@ const createBookingSchema = z.object({
     name: z.string().trim().min(2).max(120),
     whatsapp: z.string().trim().min(8).max(20),
     email: z.string().trim().email().max(160).optional().or(z.literal("")),
+    cpf: z.string().trim().max(20).optional().or(z.literal("")),
+    birth_date: z.string().optional().or(z.literal("")),
+    address: z.string().trim().max(300).optional().or(z.literal("")),
     notes: z.string().trim().max(500).optional().or(z.literal("")),
   }),
 });
