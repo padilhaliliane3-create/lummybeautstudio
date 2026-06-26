@@ -122,19 +122,25 @@ export const createBooking = createServerFn({ method: "POST" })
       .eq("whatsapp", data.client.whatsapp)
       .maybeSingle();
     let clientId = existingClient.data?.id;
+    const clientPayload = {
+      name: data.client.name,
+      whatsapp: data.client.whatsapp,
+      email: data.client.email || null,
+      cpf: data.client.cpf || null,
+      birth_date: data.client.birth_date || null,
+      address: data.client.address || null,
+      notes: data.client.notes || null,
+    };
     if (!clientId) {
       const ins = await sb
         .from("clients")
-        .insert({
-          name: data.client.name,
-          whatsapp: data.client.whatsapp,
-          email: data.client.email || null,
-          notes: data.client.notes || null,
-        })
+        .insert(clientPayload)
         .select("id")
         .single();
       if (ins.error) throw ins.error;
       clientId = ins.data.id;
+    } else {
+      await sb.from("clients").update(clientPayload).eq("id", clientId);
     }
 
     const bookingIns = await sb
