@@ -78,13 +78,19 @@ function AdminLayout() {
             Sua conta ainda não tem permissão de administrador.
           </p>
           <div className="mt-5 flex flex-col gap-2">
+            <Link
+              to="/cliente"
+              className="rounded-full bg-gradient-gold px-5 py-2 text-sm font-medium text-white"
+            >
+              Ir para minha área de cliente
+            </Link>
             <button
               onClick={async () => {
                 const r = await claim();
                 if (r.granted) refetch();
                 else alert("Já existe um administrador. Peça acesso a ele.");
               }}
-              className="rounded-full bg-gradient-gold px-5 py-2 text-sm font-medium text-white"
+              className="rounded-full border border-gold/60 px-5 py-2 text-sm font-medium text-gold hover:bg-gold/10"
             >
               Sou o primeiro admin · ativar
             </button>
