@@ -15,6 +15,7 @@ import {
   ShieldCheck,
   UserCircle2,
   Settings,
+  Wallet,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Logo } from "@/components/Logo";
@@ -31,6 +32,7 @@ const nav: NavItem[] = [
   { to: "/admin/agenda", label: "Agenda", icon: Calendar },
   { to: "/admin/agendamentos", label: "Agendamentos", icon: ListChecks },
   { to: "/admin/clientes", label: "Clientes", icon: UserCircle2 },
+  { to: "/admin/financeiro", label: "Financeiro", icon: Wallet },
   { to: "/admin/servicos", label: "Serviços", icon: Scissors },
   { to: "/admin/profissionais", label: "Profissionais", icon: Users },
   { to: "/admin/bloqueios", label: "Bloqueios", icon: CalendarOff },
