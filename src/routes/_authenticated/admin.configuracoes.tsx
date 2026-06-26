@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { adminGetSettings, adminSaveSettings } from "@/lib/settings.functions";
 import { maskBrPhone, toE164BR, formatBrFromE164, isValidBrPhone } from "@/lib/phone";
+import { ImageUploader } from "@/components/ImageUploader";
 
 export const Route = createFileRoute("/_authenticated/admin/configuracoes")({
   component: SettingsPage,
