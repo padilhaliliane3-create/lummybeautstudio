@@ -126,9 +126,48 @@ export type Database = {
         }
         Relationships: []
       }
+      client_recommendations: {
+        Row: {
+          body: string | null
+          client_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string | null
+          client_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string | null
+          client_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_recommendations_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clients: {
         Row: {
           address: string | null
+          auth_user_id: string | null
           birth_date: string | null
           cpf: string | null
           created_at: string
@@ -141,6 +180,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          auth_user_id?: string | null
           birth_date?: string | null
           cpf?: string | null
           created_at?: string
@@ -153,6 +193,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          auth_user_id?: string | null
           birth_date?: string | null
           cpf?: string | null
           created_at?: string
@@ -164,6 +205,100 @@ export type Database = {
           whatsapp?: string
         }
         Relationships: []
+      }
+      finance_entries: {
+        Row: {
+          amount: number
+          booking_id: string | null
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          entry_date: string
+          id: string
+          payment_method: string | null
+          type: Database["public"]["Enums"]["finance_type"]
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          booking_id?: string | null
+          category: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          entry_date?: string
+          id?: string
+          payment_method?: string | null
+          type: Database["public"]["Enums"]["finance_type"]
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          booking_id?: string | null
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          entry_date?: string
+          id?: string
+          payment_method?: string | null
+          type?: Database["public"]["Enums"]["finance_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "finance_entries_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hair_schedules: {
+        Row: {
+          client_id: string
+          created_at: string
+          done: boolean
+          done_at: string | null
+          id: string
+          notes: string | null
+          scheduled_date: string
+          step_type: Database["public"]["Enums"]["hair_step_type"]
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          done?: boolean
+          done_at?: string | null
+          id?: string
+          notes?: string | null
+          scheduled_date: string
+          step_type: Database["public"]["Enums"]["hair_step_type"]
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          done?: boolean
+          done_at?: string | null
+          id?: string
+          notes?: string | null
+          scheduled_date?: string
+          step_type?: Database["public"]["Enums"]["hair_step_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hair_schedules_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       professional_services: {
         Row: {
@@ -274,6 +409,7 @@ export type Database = {
           deposit_pct: number
           email: string | null
           facebook: string | null
+          finance_categories: Json | null
           hero_subtitle: string | null
           hero_title: string | null
           hours_json: Json | null
@@ -294,6 +430,7 @@ export type Database = {
           deposit_pct?: number
           email?: string | null
           facebook?: string | null
+          finance_categories?: Json | null
           hero_subtitle?: string | null
           hero_title?: string | null
           hours_json?: Json | null
@@ -314,6 +451,7 @@ export type Database = {
           deposit_pct?: number
           email?: string | null
           facebook?: string | null
+          finance_categories?: Json | null
           hero_subtitle?: string | null
           hero_title?: string | null
           hours_json?: Json | null
@@ -455,6 +593,8 @@ export type Database = {
         | "cancelled"
         | "completed"
         | "no_show"
+      finance_type: "income" | "expense"
+      hair_step_type: "hidratacao" | "nutricao" | "reconstrucao"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -590,6 +730,8 @@ export const Constants = {
         "completed",
         "no_show",
       ],
+      finance_type: ["income", "expense"],
+      hair_step_type: ["hidratacao", "nutricao", "reconstrucao"],
     },
   },
 } as const

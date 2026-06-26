@@ -1,82 +1,61 @@
+# Fase 3 + Módulo Financeiro
 
-# Plano de implementação — LUMMY v2
+Vou entregar as duas frentes em sequência, na mesma leva de migrações para evitar idas e voltas.
 
-O escopo é grande (8 frentes). Para não estourar o tempo de uma única iteração e manter qualidade, proponho **quebrar em 4 fases** e entregar uma fase por vez. Você aprova esta fatiação (ou ajusta) e eu já começo pela Fase 1.
+## 1. Banco de dados (uma migração só)
 
----
+Tabelas novas:
+- **`finance_entries`** — lançamentos manuais do financeiro
+  - `type` (`income` | `expense`), `category` (texto livre: "Produtos", "Aluguel", "Comissão"...), `amount`, `description`, `entry_date`, `payment_method`, `booking_id` (opcional, para vincular a um agendamento), `created_by`.
+- **`hair_schedules`** — cronograma capilar por cliente
+  - `client_id`, `step_type` (`hidratacao` | `nutricao` | `reconstrucao`), `scheduled_date`, `done` (bool), `notes`.
+- **`client_recommendations`** — recomendações geradas pelo admin
+  - `client_id`, `title`, `body`, `created_by`.
 
-## Fase 1 — Fundações (admin, clientes, configurações, tema)
+Ajustes:
+- Adicionar coluna `auth_user_id uuid` em `clients` para ligar conta logada ao cadastro (UNIQUE, nullable).
+- View/leitura: receita do financeiro inclui **agendamentos `completed`** (preço cheio) somados a `finance_entries.income`, menos `finance_entries.expense`.
 
-**1. Gerenciamento de Administradores** — nova aba `/admin/usuarios`:
-- Lista de usuários autenticados (via `auth.users` por server function admin)
-- Promover / despromover (`admin` ↔ usuário comum) gravando em `user_roles`
-- Bloqueio: admin não consegue se auto-despromover se for o único
-- RLS: só `has_role(admin)` enxerga e altera
+RLS:
+- Cliente lê/edita só os próprios dados (`clients.auth_user_id = auth.uid()`), incluindo bookings, hair_schedules e recommendations vinculados.
+- Admin total. Financeiro: só admin.
 
-**2. Cadastro de clientes (CRUD completo)** — nova aba `/admin/clientes`:
-- Migração para adicionar em `clients`: `cpf`, `birth_date`, `address`, `notes`, mantendo `name/email/whatsapp`
-- Máscara BR `(42) 99999-9999` no input e armazenamento em E.164 (`+5542999999999`)
-- Ícone WhatsApp ao lado abrindo `https://wa.me/...`
-- Histórico de atendimentos por cliente (lista de bookings)
+## 2. Área do Cliente (`/_cliente/*`)
 
-**6. Configurações do site** — nova aba `/admin/configuracoes`:
-- Expandir `salon_settings`: `company_name, address, phone, whatsapp, instagram, facebook, email, hours_json, hero_title, hero_subtitle, about_text, logo_url, banner_url`
-- Home, header e footer passam a ler de `salon_settings` (via server fn pública)
-- Upload de logo/banner em bucket `branding` (Supabase Storage)
+Layout próprio, separado do `/admin`, com header da marca e tema claro/escuro.
 
-**7. Tema Claro/Escuro**:
-- `ThemeProvider` com `localStorage` + fallback `prefers-color-scheme`
-- Botão sol/lua no header (site e admin)
-- Revisar tokens no `styles.css` (já existe `.dark` parcial — completar paleta dourada noturna)
-- Transição suave em `body`
+Rotas:
+- **`/_cliente`** (gate): se logado e `clients.auth_user_id` não estiver setado, oferece "vincular meu cadastro" via WhatsApp/CPF.
+- **`/_cliente/`** — dashboard: próximo agendamento, próximo passo do cronograma, recomendações ativas.
+- **`/_cliente/agendamentos`** — histórico + futuros, com ações (cancelar se >24h, reagendar = atalho `/agendar`).
+- **`/_cliente/cronograma`** — cronograma capilar visual (hidratação/nutrição/reconstrução), marcar como feito, sugestão automática do próximo ciclo (toda hidratação 7d, nutrição 15d, reconstrução 30d — config padrão).
+- **`/_cliente/perfil`** — editar dados pessoais (CPF, nascimento, endereço, foto opcional).
 
----
+Login do cliente: reaproveita `/auth` (mesma tela). Após login, se vier de fluxo de cliente vai pra `/cliente`; se admin, pra `/admin`. Decide pelo `has_role`.
 
-## Fase 2 — Notificações automáticas (item 2)
+## 3. Módulo Financeiro (`/admin/financeiro`)
 
-- **WhatsApp**: sem API oficial paga, usaremos **mensagens prontas via `wa.me`** + um painel "Mensagens pendentes" no admin que abre o WhatsApp Web com o texto montado (1 clique). Alternativa real: integrar **Twilio WhatsApp** ou **GatewayAPI** se você fornecer a conta. *Preciso da sua escolha.*
-- **E-mail**: ativar **Lovable Emails** (domínio próprio, fila e templates React Email):
-  - Templates: `booking-confirmed`, `booking-reminder-24h`, `booking-cancelled`, `booking-rescheduled`
-  - Disparo automático em mudanças de `bookings.status` ou `scheduled_date/start_time` (trigger no banco enfileirando + server fn enviando)
-- **Lembrete 24h**: cron `pg_cron` rodando de hora em hora, varrendo agendamentos de amanhã e enfileirando lembretes
+Subseções via tabs:
+- **Dashboard**: cards (Receita mês, Despesas mês, Lucro, Ticket médio), gráfico de barras receita x despesa (últimos 6 meses) usando `recharts`.
+- **Lançamentos**: tabela com filtros (período, tipo, categoria), CRUD (modal), import automático de agendamentos `completed` como receita (toggle "ver com agendamentos").
+- **Fluxo de Caixa**: lista diária acumulada com saldo, exportar CSV.
+- **Categorias**: gestão simples (lista de strings sugeridas, salvas em `salon_settings.finance_categories` jsonb).
 
-> Item bloqueante: preciso saber **WhatsApp via wa.me (grátis, semi-manual)** ou **Twilio/GatewayAPI (pago, 100% automático)** e **autorizar a configuração do domínio de e-mail** (você escolhe o subdomínio, ex.: `notify.lummybeauty.com.br`).
+Server fns novas em `src/lib/finance.functions.ts`:
+- `adminListFinanceEntries(filters)`, `adminSaveFinanceEntry`, `adminDeleteFinanceEntry`, `adminFinanceSummary({from,to})`.
 
----
+## 4. Itens transversais
 
-## Fase 3 — Área do cliente + Cronograma capilar (item 4)
+- Item de menu no admin sidebar: "Financeiro".
+- Link "Área do Cliente" no header público (`SiteShell`) quando logado como cliente.
+- Após criar agendamento em `/agendar`, se usuário estiver logado, auto-linkar `clients.auth_user_id`.
 
-- Login do cliente em `/cliente` (email/senha + Google), separado do admin
-- Vínculo `clients.user_id → auth.users`
-- Painel `/cliente`:
-  - Próximos agendamentos e histórico (RLS por `user_id`)
-  - Recomendações do profissional (campo livre por booking)
-  - **Cronograma capilar**: nova tabela `hair_schedules` (etapas: hidratação/nutrição/reconstrução, datas, observações) — admin gerencia, cliente só visualiza
-- Ajuste no fluxo `/agendar`: se o cliente estiver logado, pré-preenche dados e vincula booking ao `user_id`
+## Ordem de execução
 
----
+1. Migração única (tabelas + RLS + coluna em `clients`).
+2. `finance.functions.ts` + rota `/admin/financeiro` (com tabs).
+3. `client.functions.ts` (cronograma, recomendações, vincular conta) + layout `/_cliente`.
+4. Páginas do cliente (dashboard, agendamentos, cronograma, perfil).
+5. Ajustes no `SiteShell` e `/agendar` (auto-link).
 
-## Fase 4 — Financeiro (item 5)
-
-- Novas tabelas: `finance_entries` (entradas/saídas, categoria, método, data, valor, descrição, referência opcional ao booking), `finance_categories`
-- Lançamento automático ao concluir agendamento (entrada de serviço)
-- Lançamento manual de saídas (despesas, salários, compras)
-- Dashboard `/admin/financeiro`: cards (dia/semana/mês/ano), gráfico de fluxo, filtros, tabela paginada
-- Export CSV (PDF/Excel: opcional, posso adicionar `xlsx` e `jspdf` se quiser)
-
----
-
-## Decisões que preciso de você antes de codar a Fase 2
-
-1. **WhatsApp**: `wa.me` (grátis, semi-automático) **ou** Twilio/GatewayAPI (pago, 100% auto)?
-2. **E-mail**: posso já ativar Lovable Emails e te pedir o subdomínio?
-3. **Logo/Banner em Configurações**: criar bucket público no Storage? (recomendado: sim)
-4. **Login do cliente** (Fase 3): quero adicionar **Google** além de email/senha? (recomendado: sim)
-
----
-
-## Próximo passo
-
-Se aprovar este plano, começo **agora pela Fase 1 inteira** (Admins + Clientes + Configurações + Tema). Quando terminar, te aviso e passamos para Fase 2.
-
-Se quiser reordenar (ex.: "quero o financeiro antes do cronograma capilar"), só me dizer.
+Sigo direto?

@@ -13,11 +13,17 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AgendarRouteImport } from './routes/agendar'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedClienteRouteImport } from './routes/_authenticated/cliente'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedClienteIndexRouteImport } from './routes/_authenticated/cliente.index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedClientePerfilRouteImport } from './routes/_authenticated/cliente.perfil'
+import { Route as AuthenticatedClienteCronogramaRouteImport } from './routes/_authenticated/cliente.cronograma'
+import { Route as AuthenticatedClienteAgendamentosRouteImport } from './routes/_authenticated/cliente.agendamentos'
 import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated/admin.usuarios'
 import { Route as AuthenticatedAdminServicosRouteImport } from './routes/_authenticated/admin.servicos'
 import { Route as AuthenticatedAdminProfissionaisRouteImport } from './routes/_authenticated/admin.profissionais'
+import { Route as AuthenticatedAdminFinanceiroRouteImport } from './routes/_authenticated/admin.financeiro'
 import { Route as AuthenticatedAdminConfiguracoesRouteImport } from './routes/_authenticated/admin.configuracoes'
 import { Route as AuthenticatedAdminClientesRouteImport } from './routes/_authenticated/admin.clientes'
 import { Route as AuthenticatedAdminBloqueiosRouteImport } from './routes/_authenticated/admin.bloqueios'
@@ -43,16 +49,45 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedClienteRoute = AuthenticatedClienteRouteImport.update({
+  id: '/cliente',
+  path: '/cliente',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedClienteIndexRoute =
+  AuthenticatedClienteIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedClienteRoute,
+  } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedClientePerfilRoute =
+  AuthenticatedClientePerfilRouteImport.update({
+    id: '/perfil',
+    path: '/perfil',
+    getParentRoute: () => AuthenticatedClienteRoute,
+  } as any)
+const AuthenticatedClienteCronogramaRoute =
+  AuthenticatedClienteCronogramaRouteImport.update({
+    id: '/cronograma',
+    path: '/cronograma',
+    getParentRoute: () => AuthenticatedClienteRoute,
+  } as any)
+const AuthenticatedClienteAgendamentosRoute =
+  AuthenticatedClienteAgendamentosRouteImport.update({
+    id: '/agendamentos',
+    path: '/agendamentos',
+    getParentRoute: () => AuthenticatedClienteRoute,
+  } as any)
 const AuthenticatedAdminUsuariosRoute =
   AuthenticatedAdminUsuariosRouteImport.update({
     id: '/usuarios',
@@ -69,6 +104,12 @@ const AuthenticatedAdminProfissionaisRoute =
   AuthenticatedAdminProfissionaisRouteImport.update({
     id: '/profissionais',
     path: '/profissionais',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminFinanceiroRoute =
+  AuthenticatedAdminFinanceiroRouteImport.update({
+    id: '/financeiro',
+    path: '/financeiro',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminConfiguracoesRoute =
@@ -107,15 +148,21 @@ export interface FileRoutesByFullPath {
   '/agendar': typeof AgendarRoute
   '/auth': typeof AuthRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/cliente': typeof AuthenticatedClienteRouteWithChildren
   '/admin/agenda': typeof AuthenticatedAdminAgendaRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
   '/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
   '/admin/clientes': typeof AuthenticatedAdminClientesRoute
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
   '/admin/profissionais': typeof AuthenticatedAdminProfissionaisRoute
   '/admin/servicos': typeof AuthenticatedAdminServicosRoute
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
+  '/cliente/agendamentos': typeof AuthenticatedClienteAgendamentosRoute
+  '/cliente/cronograma': typeof AuthenticatedClienteCronogramaRoute
+  '/cliente/perfil': typeof AuthenticatedClientePerfilRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/cliente/': typeof AuthenticatedClienteIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -126,10 +173,15 @@ export interface FileRoutesByTo {
   '/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
   '/admin/clientes': typeof AuthenticatedAdminClientesRoute
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
   '/admin/profissionais': typeof AuthenticatedAdminProfissionaisRoute
   '/admin/servicos': typeof AuthenticatedAdminServicosRoute
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
+  '/cliente/agendamentos': typeof AuthenticatedClienteAgendamentosRoute
+  '/cliente/cronograma': typeof AuthenticatedClienteCronogramaRoute
+  '/cliente/perfil': typeof AuthenticatedClientePerfilRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/cliente': typeof AuthenticatedClienteIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -138,15 +190,21 @@ export interface FileRoutesById {
   '/agendar': typeof AgendarRoute
   '/auth': typeof AuthRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/cliente': typeof AuthenticatedClienteRouteWithChildren
   '/_authenticated/admin/agenda': typeof AuthenticatedAdminAgendaRoute
   '/_authenticated/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
   '/_authenticated/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
   '/_authenticated/admin/clientes': typeof AuthenticatedAdminClientesRoute
   '/_authenticated/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/_authenticated/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
   '/_authenticated/admin/profissionais': typeof AuthenticatedAdminProfissionaisRoute
   '/_authenticated/admin/servicos': typeof AuthenticatedAdminServicosRoute
   '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
+  '/_authenticated/cliente/agendamentos': typeof AuthenticatedClienteAgendamentosRoute
+  '/_authenticated/cliente/cronograma': typeof AuthenticatedClienteCronogramaRoute
+  '/_authenticated/cliente/perfil': typeof AuthenticatedClientePerfilRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/cliente/': typeof AuthenticatedClienteIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -155,15 +213,21 @@ export interface FileRouteTypes {
     | '/agendar'
     | '/auth'
     | '/admin'
+    | '/cliente'
     | '/admin/agenda'
     | '/admin/agendamentos'
     | '/admin/bloqueios'
     | '/admin/clientes'
     | '/admin/configuracoes'
+    | '/admin/financeiro'
     | '/admin/profissionais'
     | '/admin/servicos'
     | '/admin/usuarios'
+    | '/cliente/agendamentos'
+    | '/cliente/cronograma'
+    | '/cliente/perfil'
     | '/admin/'
+    | '/cliente/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -174,10 +238,15 @@ export interface FileRouteTypes {
     | '/admin/bloqueios'
     | '/admin/clientes'
     | '/admin/configuracoes'
+    | '/admin/financeiro'
     | '/admin/profissionais'
     | '/admin/servicos'
     | '/admin/usuarios'
+    | '/cliente/agendamentos'
+    | '/cliente/cronograma'
+    | '/cliente/perfil'
     | '/admin'
+    | '/cliente'
   id:
     | '__root__'
     | '/'
@@ -185,15 +254,21 @@ export interface FileRouteTypes {
     | '/agendar'
     | '/auth'
     | '/_authenticated/admin'
+    | '/_authenticated/cliente'
     | '/_authenticated/admin/agenda'
     | '/_authenticated/admin/agendamentos'
     | '/_authenticated/admin/bloqueios'
     | '/_authenticated/admin/clientes'
     | '/_authenticated/admin/configuracoes'
+    | '/_authenticated/admin/financeiro'
     | '/_authenticated/admin/profissionais'
     | '/_authenticated/admin/servicos'
     | '/_authenticated/admin/usuarios'
+    | '/_authenticated/cliente/agendamentos'
+    | '/_authenticated/cliente/cronograma'
+    | '/_authenticated/cliente/perfil'
     | '/_authenticated/admin/'
+    | '/_authenticated/cliente/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -233,6 +308,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/cliente': {
+      id: '/_authenticated/cliente'
+      path: '/cliente'
+      fullPath: '/cliente'
+      preLoaderRoute: typeof AuthenticatedClienteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -240,12 +322,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/cliente/': {
+      id: '/_authenticated/cliente/'
+      path: '/'
+      fullPath: '/cliente/'
+      preLoaderRoute: typeof AuthenticatedClienteIndexRouteImport
+      parentRoute: typeof AuthenticatedClienteRoute
+    }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/cliente/perfil': {
+      id: '/_authenticated/cliente/perfil'
+      path: '/perfil'
+      fullPath: '/cliente/perfil'
+      preLoaderRoute: typeof AuthenticatedClientePerfilRouteImport
+      parentRoute: typeof AuthenticatedClienteRoute
+    }
+    '/_authenticated/cliente/cronograma': {
+      id: '/_authenticated/cliente/cronograma'
+      path: '/cronograma'
+      fullPath: '/cliente/cronograma'
+      preLoaderRoute: typeof AuthenticatedClienteCronogramaRouteImport
+      parentRoute: typeof AuthenticatedClienteRoute
+    }
+    '/_authenticated/cliente/agendamentos': {
+      id: '/_authenticated/cliente/agendamentos'
+      path: '/agendamentos'
+      fullPath: '/cliente/agendamentos'
+      preLoaderRoute: typeof AuthenticatedClienteAgendamentosRouteImport
+      parentRoute: typeof AuthenticatedClienteRoute
     }
     '/_authenticated/admin/usuarios': {
       id: '/_authenticated/admin/usuarios'
@@ -266,6 +376,13 @@ declare module '@tanstack/react-router' {
       path: '/profissionais'
       fullPath: '/admin/profissionais'
       preLoaderRoute: typeof AuthenticatedAdminProfissionaisRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/financeiro': {
+      id: '/_authenticated/admin/financeiro'
+      path: '/financeiro'
+      fullPath: '/admin/financeiro'
+      preLoaderRoute: typeof AuthenticatedAdminFinanceiroRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/configuracoes': {
@@ -312,6 +429,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminBloqueiosRoute: typeof AuthenticatedAdminBloqueiosRoute
   AuthenticatedAdminClientesRoute: typeof AuthenticatedAdminClientesRoute
   AuthenticatedAdminConfiguracoesRoute: typeof AuthenticatedAdminConfiguracoesRoute
+  AuthenticatedAdminFinanceiroRoute: typeof AuthenticatedAdminFinanceiroRoute
   AuthenticatedAdminProfissionaisRoute: typeof AuthenticatedAdminProfissionaisRoute
   AuthenticatedAdminServicosRoute: typeof AuthenticatedAdminServicosRoute
   AuthenticatedAdminUsuariosRoute: typeof AuthenticatedAdminUsuariosRoute
@@ -324,6 +442,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminBloqueiosRoute: AuthenticatedAdminBloqueiosRoute,
   AuthenticatedAdminClientesRoute: AuthenticatedAdminClientesRoute,
   AuthenticatedAdminConfiguracoesRoute: AuthenticatedAdminConfiguracoesRoute,
+  AuthenticatedAdminFinanceiroRoute: AuthenticatedAdminFinanceiroRoute,
   AuthenticatedAdminProfissionaisRoute: AuthenticatedAdminProfissionaisRoute,
   AuthenticatedAdminServicosRoute: AuthenticatedAdminServicosRoute,
   AuthenticatedAdminUsuariosRoute: AuthenticatedAdminUsuariosRoute,
@@ -333,12 +452,31 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
 const AuthenticatedAdminRouteWithChildren =
   AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
+interface AuthenticatedClienteRouteChildren {
+  AuthenticatedClienteAgendamentosRoute: typeof AuthenticatedClienteAgendamentosRoute
+  AuthenticatedClienteCronogramaRoute: typeof AuthenticatedClienteCronogramaRoute
+  AuthenticatedClientePerfilRoute: typeof AuthenticatedClientePerfilRoute
+  AuthenticatedClienteIndexRoute: typeof AuthenticatedClienteIndexRoute
+}
+
+const AuthenticatedClienteRouteChildren: AuthenticatedClienteRouteChildren = {
+  AuthenticatedClienteAgendamentosRoute: AuthenticatedClienteAgendamentosRoute,
+  AuthenticatedClienteCronogramaRoute: AuthenticatedClienteCronogramaRoute,
+  AuthenticatedClientePerfilRoute: AuthenticatedClientePerfilRoute,
+  AuthenticatedClienteIndexRoute: AuthenticatedClienteIndexRoute,
+}
+
+const AuthenticatedClienteRouteWithChildren =
+  AuthenticatedClienteRoute._addFileChildren(AuthenticatedClienteRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+  AuthenticatedClienteRoute: typeof AuthenticatedClienteRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+  AuthenticatedClienteRoute: AuthenticatedClienteRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =
