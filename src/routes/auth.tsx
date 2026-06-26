@@ -19,10 +19,20 @@ function AuthPage() {
   const [info, setInfo] = useState<string | null>(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) navigate({ to: "/admin" });
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (data.user) navigate({ to: await landingFor(data.user.id) });
     });
   }, [navigate]);
+
+  async function landingFor(userId: string): Promise<"/admin" | "/cliente"> {
+    const { data } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle();
+    return data ? "/admin" : "/cliente";
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -34,20 +44,20 @@ function AuthPage() {
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: window.location.origin + "/admin" },
+          options: { emailRedirectTo: window.location.origin + "/cliente" },
         });
         if (error) throw error;
-        const { error: signinErr } = await supabase.auth.signInWithPassword({ email, password });
-        if (signinErr) {
+        const { error: signinErr, data: signed } = await supabase.auth.signInWithPassword({ email, password });
+        if (signinErr || !signed.user) {
           setInfo("Conta criada. Faça login para entrar.");
           setMode("login");
           return;
         }
-        navigate({ to: "/admin" });
+        navigate({ to: await landingFor(signed.user.id) });
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        navigate({ to: "/admin" });
+        const { error, data: signed } = await supabase.auth.signInWithPassword({ email, password });
+        if (error || !signed.user) throw error ?? new Error("Falha no login");
+        navigate({ to: await landingFor(signed.user.id) });
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro ao autenticar");
