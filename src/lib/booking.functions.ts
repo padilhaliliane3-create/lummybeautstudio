@@ -115,8 +115,9 @@ export const createBooking = createServerFn({ method: "POST" })
     const deposit = Math.round((total * depositPct) / 100 * 100) / 100;
     const remaining = Math.round((total - deposit) * 100) / 100;
 
-    // upsert cliente por whatsapp
-    const existingClient = await sb
+    // upsert cliente por whatsapp — usa admin pois leitura/update agora exige owner ou admin
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const existingClient = await supabaseAdmin
       .from("clients")
       .select("id")
       .eq("whatsapp", data.client.whatsapp)
@@ -132,7 +133,7 @@ export const createBooking = createServerFn({ method: "POST" })
       notes: data.client.notes || null,
     };
     if (!clientId) {
-      const ins = await sb
+      const ins = await supabaseAdmin
         .from("clients")
         .insert(clientPayload)
         .select("id")
@@ -140,7 +141,7 @@ export const createBooking = createServerFn({ method: "POST" })
       if (ins.error) throw ins.error;
       clientId = ins.data.id;
     } else {
-      await sb.from("clients").update(clientPayload).eq("id", clientId);
+      await supabaseAdmin.from("clients").update(clientPayload).eq("id", clientId);
     }
 
     const bookingIns = await sb
