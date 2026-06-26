@@ -87,12 +87,21 @@ function SettingsPage() {
         <Field label="Nome da empresa">
           <input value={form.company_name ?? ""} onChange={(e) => set("company_name", e.target.value)} className="input" />
         </Field>
-        <Field label="URL do logo (PNG/SVG)">
-          <input value={form.logo_url ?? ""} onChange={(e) => set("logo_url", e.target.value)} className="input" placeholder="https://…/logo.png" />
-        </Field>
-        <Field label="URL do banner principal">
-          <input value={form.banner_url ?? ""} onChange={(e) => set("banner_url", e.target.value)} className="input" placeholder="https://…/banner.jpg" />
-        </Field>
+        <div />
+        <ImageUploader
+          label="Logo (PNG/SVG)"
+          folder="logo"
+          value={form.logo_url ?? ""}
+          onChange={(url) => set("logo_url", url)}
+          aspect="square"
+        />
+        <ImageUploader
+          label="Banner principal"
+          folder="banner"
+          value={form.banner_url ?? ""}
+          onChange={(url) => set("banner_url", url)}
+          aspect="wide"
+        />
       </Section>
 
       <Section title="Contato">
