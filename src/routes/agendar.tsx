@@ -572,6 +572,35 @@ function ClientStep({
             inputMode="email"
           />
         </Field>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="CPF">
+            <input
+              value={client.cpf}
+              onChange={(e) => setClient({ ...client, cpf: maskCpf(e.target.value) })}
+              className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm outline-none transition focus:border-gold focus:ring-2 focus:ring-gold/20"
+              placeholder="000.000.000-00"
+              maxLength={14}
+              inputMode="numeric"
+            />
+          </Field>
+          <Field label="Data de nascimento">
+            <input
+              type="date"
+              value={client.birth_date}
+              onChange={(e) => setClient({ ...client, birth_date: e.target.value })}
+              className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm outline-none transition focus:border-gold focus:ring-2 focus:ring-gold/20"
+            />
+          </Field>
+        </div>
+        <Field label="Endereço">
+          <input
+            value={client.address}
+            onChange={(e) => setClient({ ...client, address: e.target.value })}
+            className="w-full rounded-xl border border-border bg-card px-4 py-3 text-sm outline-none transition focus:border-gold focus:ring-2 focus:ring-gold/20"
+            placeholder="Rua, número, bairro – cidade/UF"
+            maxLength={300}
+          />
+        </Field>
         <Field label="Observações">
           <textarea
             value={client.notes}
