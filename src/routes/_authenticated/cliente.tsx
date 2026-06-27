@@ -1,17 +1,16 @@
 import { createFileRoute, Outlet, Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeProvider";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getMyClient, claimMyClient } from "@/lib/client-area.functions";
-import { maskBrPhoneInput, maskCpfInput } from "@/lib/phone";
+import { getMyClient } from "@/lib/client-area.functions";
 import { LayoutDashboard, CalendarCheck, Sparkles, UserCircle2, LogOut } from "lucide-react";
+
+export const Route = createFileRoute("/_authenticated/cliente")({
+  component: ClienteLayout,
+});
+
 
 export const Route = createFileRoute("/_authenticated/cliente")({
   component: ClienteLayout,
