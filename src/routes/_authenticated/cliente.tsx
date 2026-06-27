@@ -12,9 +12,6 @@ export const Route = createFileRoute("/_authenticated/cliente")({
 });
 
 
-export const Route = createFileRoute("/_authenticated/cliente")({
-  component: ClienteLayout,
-});
 
 const nav = [
   { to: "/cliente", label: "Início", icon: LayoutDashboard, exact: true },
