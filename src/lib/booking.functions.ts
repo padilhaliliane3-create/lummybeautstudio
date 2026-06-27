@@ -144,7 +144,7 @@ export const createBooking = createServerFn({ method: "POST" })
       await supabaseAdmin.from("clients").update(clientPayload).eq("id", clientId);
     }
 
-    const bookingIns = await sb
+    const bookingIns = await supabaseAdmin
       .from("bookings")
       .insert({
         client_id: clientId,
