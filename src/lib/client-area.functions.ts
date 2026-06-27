@@ -2,18 +2,60 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-/** Retorna o cadastro de cliente vinculado à conta autenticada (se houver). */
+/** Retorna o cadastro de cliente vinculado à conta autenticada,
+ *  criando automaticamente se ainda não existir. */
 export const getMyClient = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data, error } = await context.supabase
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // já vinculado?
+    const mine = await supabaseAdmin
       .from("clients")
       .select("*")
       .eq("auth_user_id", context.userId)
       .maybeSingle();
-    if (error) throw error;
-    return data;
+    if (mine.data) return mine.data;
+
+    // tenta vincular por email (cliente cadastrado antes via agendamento)
+    const email = (context.claims as any)?.email as string | undefined;
+    const meta = ((context.claims as any)?.user_metadata ?? {}) as Record<string, any>;
+    const fallbackName =
+      meta.full_name || meta.name || (email ? email.split("@")[0] : "Cliente");
+
+    if (email) {
+      const byEmail = await supabaseAdmin
+        .from("clients")
+        .select("*")
+        .eq("email", email)
+        .is("auth_user_id", null)
+        .maybeSingle();
+      if (byEmail.data) {
+        const upd = await supabaseAdmin
+          .from("clients")
+          .update({ auth_user_id: context.userId })
+          .eq("id", byEmail.data.id)
+          .select("*")
+          .single();
+        if (!upd.error && upd.data) return upd.data;
+      }
+    }
+
+    // cria registro mínimo — usuário completa no /cliente/perfil
+    const ins = await supabaseAdmin
+      .from("clients")
+      .insert({
+        name: fallbackName,
+        whatsapp: `pendente-${context.userId.slice(0, 8)}`,
+        email: email ?? null,
+        auth_user_id: context.userId,
+      })
+      .select("*")
+      .single();
+    if (ins.error) throw ins.error;
+    return ins.data;
   });
+
 
 /** Reivindica um cadastro existente por whatsapp + CPF (ou whatsapp se cliente não tem CPF). */
 export const claimMyClient = createServerFn({ method: "POST" })
