@@ -440,7 +440,11 @@ function DateTimeStep({
     queryKey: ["availability", professional.id, date],
     enabled: !!date,
     queryFn: () => fetchAvailability({ data: { professionalId: professional.id, date: date! } }),
+    staleTime: 60_000,
+    gcTime: 5 * 60_000,
+    placeholderData: (prev) => prev,
   });
+
 
   const slots = useMemo(() => {
     if (!date) return [];
