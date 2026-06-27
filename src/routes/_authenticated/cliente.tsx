@@ -45,9 +45,9 @@ function ClienteLayout() {
     );
   }
 
-  if (!me.data) {
-    return <ClaimAccount onDone={() => me.refetch()} onSignOut={signOut} />;
-  }
+  // me.data sempre existirá (auto-criado no backend), mas mantemos guarda silenciosa
+  if (!me.data) return null;
+
 
   return (
     <div className="flex min-h-screen flex-col bg-secondary/40">
