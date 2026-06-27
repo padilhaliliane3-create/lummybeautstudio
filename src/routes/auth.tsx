@@ -11,7 +11,7 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [mode, setMode] = useState<"login" | "signup" | "reset">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -40,7 +40,15 @@ function AuthPage() {
     setInfo(null);
     setLoading(true);
     try {
-      if (mode === "signup") {
+      if (mode === "reset") {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + "/update-password",
+        });
+        if (error) throw error;
+        setInfo("Email de recuperação enviado! Verifique sua caixa de entrada.");
+        setMode("login");
+        return;
+      } else if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
           email,
           password,
@@ -73,7 +81,7 @@ function AuthPage() {
           <Logo size={56} />
           <h1 className="mt-3 font-display text-2xl text-foreground">Painel LUMMY</h1>
           <p className="mt-1 text-xs text-muted-foreground">
-            {mode === "login" ? "Entre com sua conta de equipe" : "Crie sua conta de equipe"}
+            {mode === "login" ? "Entre com sua conta de equipe ou cliente" : mode === "signup" ? "Crie sua conta" : "Recupere sua senha"}
           </p>
         </div>
 
@@ -88,17 +96,26 @@ function AuthPage() {
               className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:border-gold"
             />
           </div>
-          <div>
-            <label className="text-xs uppercase tracking-wide text-muted-foreground">Senha</label>
-            <input
-              type="password"
-              required
-              minLength={8}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:border-gold"
-            />
-          </div>
+          {mode !== "reset" && (
+            <div>
+              <div className="flex items-center justify-between">
+                <label className="text-xs uppercase tracking-wide text-muted-foreground">Senha</label>
+                {mode === "login" && (
+                  <button type="button" onClick={() => setMode("reset")} className="text-[10px] text-muted-foreground hover:text-gold">
+                    Esqueci a senha
+                  </button>
+                )}
+              </div>
+              <input
+                type="password"
+                required
+                minLength={8}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:border-gold"
+              />
+            </div>
+          )}
 
           {error && <p className="rounded-md bg-destructive/10 px-3 py-2 text-xs text-destructive">{error}</p>}
           {info && <p className="rounded-md bg-secondary px-3 py-2 text-xs text-muted-foreground">{info}</p>}
@@ -108,7 +125,7 @@ function AuthPage() {
             disabled={loading}
             className="w-full rounded-full bg-gradient-gold px-5 py-2.5 text-sm font-medium text-white shadow-soft transition hover:opacity-95 disabled:opacity-60"
           >
-            {loading ? "Aguarde..." : mode === "login" ? "Entrar" : "Criar conta"}
+            {loading ? "Aguarde..." : mode === "login" ? "Entrar" : mode === "signup" ? "Criar conta" : "Enviar email"}
           </button>
         </form>
 
@@ -139,16 +156,29 @@ function AuthPage() {
           Entrar com Google
         </button>
 
-        <button
-          onClick={() => {
-            setMode(mode === "login" ? "signup" : "login");
-            setError(null);
-            setInfo(null);
-          }}
-          className="mt-4 w-full text-center text-xs text-muted-foreground hover:text-gold"
-        >
-          {mode === "login" ? "Não tem conta? Criar conta" : "Já tem conta? Entrar"}
-        </button>
+        {mode !== "reset" ? (
+          <button
+            onClick={() => {
+              setMode(mode === "login" ? "signup" : "login");
+              setError(null);
+              setInfo(null);
+            }}
+            className="mt-4 w-full text-center text-xs text-muted-foreground hover:text-gold"
+          >
+            {mode === "login" ? "Não tem conta? Criar conta" : "Já tem conta? Entrar"}
+          </button>
+        ) : (
+          <button
+            onClick={() => {
+              setMode("login");
+              setError(null);
+              setInfo(null);
+            }}
+            className="mt-4 w-full text-center text-xs text-muted-foreground hover:text-gold"
+          >
+            Voltar para o login
+          </button>
+        )}
 
         <div className="mt-6 text-center">
           <Link to="/" className="text-xs text-muted-foreground hover:text-gold">

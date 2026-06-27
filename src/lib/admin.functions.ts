@@ -305,3 +305,74 @@ export const adminDeleteBlock = createServerFn({ method: "POST" })
     if (error) throw error;
     return { ok: true };
   });
+
+/* ---------------- client maintenances ---------------- */
+
+export const adminListClientMaintenances = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({ clientId: z.string().uuid() }).parse(d ?? {}),
+  )
+  .handler(async ({ context, data }) => {
+    const { data: rows, error } = await context.supabase
+      .from("client_maintenances")
+      .select("*, booking:bookings(id,scheduled_date,start_time,status)")
+      .eq("client_id", data.clientId)
+      .order("scheduled_date", { ascending: true });
+    if (error) throw error;
+    return rows ?? [];
+  });
+
+const maintenanceSchema = z.object({
+  id: z.string().uuid().optional(),
+  client_id: z.string().uuid(),
+  type: z.enum(["hair", "nails", "other"]),
+  procedure_name: z.string().min(2).max(100),
+  scheduled_date: z.string(),
+  suggested_time: z.string().optional().nullable(),
+  notes: z.string().optional().nullable(),
+  status: z.enum(["pending", "confirmed", "refused", "done"]).optional(),
+});
+
+export const adminSaveClientMaintenance = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => maintenanceSchema.parse(d))
+  .handler(async ({ context, data }) => {
+    const sb = context.supabase;
+    const payload = {
+      client_id: data.client_id,
+      type: data.type,
+      procedure_name: data.procedure_name,
+      scheduled_date: data.scheduled_date,
+      suggested_time: data.suggested_time || null,
+      notes: data.notes || null,
+      status: data.status || "pending",
+    };
+    if (data.id) {
+      const { error } = await sb
+        .from("client_maintenances")
+        .update(payload)
+        .eq("id", data.id);
+      if (error) throw error;
+      return { id: data.id };
+    }
+    const { data: row, error } = await sb
+      .from("client_maintenances")
+      .insert(payload)
+      .select("id")
+      .single();
+    if (error) throw error;
+    return { id: row.id };
+  });
+
+export const adminDeleteClientMaintenance = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ context, data }) => {
+    const { error } = await context.supabase
+      .from("client_maintenances")
+      .delete()
+      .eq("id", data.id);
+    if (error) throw error;
+    return { ok: true };
+  });

@@ -29,6 +29,7 @@ import { Route as AuthenticatedAdminClientesRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminBloqueiosRouteImport } from './routes/_authenticated/admin.bloqueios'
 import { Route as AuthenticatedAdminAgendamentosRouteImport } from './routes/_authenticated/admin.agendamentos'
 import { Route as AuthenticatedAdminAgendaRouteImport } from './routes/_authenticated/admin.agenda'
+import { Route as AuthenticatedAdminClientesIdCronogramaRouteImport } from './routes/_authenticated/admin.clientes.$id.cronograma'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -142,6 +143,12 @@ const AuthenticatedAdminAgendaRoute =
     path: '/agenda',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminClientesIdCronogramaRoute =
+  AuthenticatedAdminClientesIdCronogramaRouteImport.update({
+    id: '/$id/cronograma',
+    path: '/$id/cronograma',
+    getParentRoute: () => AuthenticatedAdminClientesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -152,7 +159,7 @@ export interface FileRoutesByFullPath {
   '/admin/agenda': typeof AuthenticatedAdminAgendaRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
   '/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
-  '/admin/clientes': typeof AuthenticatedAdminClientesRoute
+  '/admin/clientes': typeof AuthenticatedAdminClientesRouteWithChildren
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
   '/admin/profissionais': typeof AuthenticatedAdminProfissionaisRoute
@@ -163,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/cliente/perfil': typeof AuthenticatedClientePerfilRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/cliente/': typeof AuthenticatedClienteIndexRoute
+  '/admin/clientes/$id/cronograma': typeof AuthenticatedAdminClientesIdCronogramaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -171,7 +179,7 @@ export interface FileRoutesByTo {
   '/admin/agenda': typeof AuthenticatedAdminAgendaRoute
   '/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
   '/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
-  '/admin/clientes': typeof AuthenticatedAdminClientesRoute
+  '/admin/clientes': typeof AuthenticatedAdminClientesRouteWithChildren
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
   '/admin/profissionais': typeof AuthenticatedAdminProfissionaisRoute
@@ -182,6 +190,7 @@ export interface FileRoutesByTo {
   '/cliente/perfil': typeof AuthenticatedClientePerfilRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/cliente': typeof AuthenticatedClienteIndexRoute
+  '/admin/clientes/$id/cronograma': typeof AuthenticatedAdminClientesIdCronogramaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -194,7 +203,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/agenda': typeof AuthenticatedAdminAgendaRoute
   '/_authenticated/admin/agendamentos': typeof AuthenticatedAdminAgendamentosRoute
   '/_authenticated/admin/bloqueios': typeof AuthenticatedAdminBloqueiosRoute
-  '/_authenticated/admin/clientes': typeof AuthenticatedAdminClientesRoute
+  '/_authenticated/admin/clientes': typeof AuthenticatedAdminClientesRouteWithChildren
   '/_authenticated/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/_authenticated/admin/financeiro': typeof AuthenticatedAdminFinanceiroRoute
   '/_authenticated/admin/profissionais': typeof AuthenticatedAdminProfissionaisRoute
@@ -205,6 +214,7 @@ export interface FileRoutesById {
   '/_authenticated/cliente/perfil': typeof AuthenticatedClientePerfilRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/cliente/': typeof AuthenticatedClienteIndexRoute
+  '/_authenticated/admin/clientes/$id/cronograma': typeof AuthenticatedAdminClientesIdCronogramaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -228,6 +238,7 @@ export interface FileRouteTypes {
     | '/cliente/perfil'
     | '/admin/'
     | '/cliente/'
+    | '/admin/clientes/$id/cronograma'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -247,6 +258,7 @@ export interface FileRouteTypes {
     | '/cliente/perfil'
     | '/admin'
     | '/cliente'
+    | '/admin/clientes/$id/cronograma'
   id:
     | '__root__'
     | '/'
@@ -269,6 +281,7 @@ export interface FileRouteTypes {
     | '/_authenticated/cliente/perfil'
     | '/_authenticated/admin/'
     | '/_authenticated/cliente/'
+    | '/_authenticated/admin/clientes/$id/cronograma'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -420,14 +433,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAgendaRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/clientes/$id/cronograma': {
+      id: '/_authenticated/admin/clientes/$id/cronograma'
+      path: '/$id/cronograma'
+      fullPath: '/admin/clientes/$id/cronograma'
+      preLoaderRoute: typeof AuthenticatedAdminClientesIdCronogramaRouteImport
+      parentRoute: typeof AuthenticatedAdminClientesRoute
+    }
   }
 }
+
+interface AuthenticatedAdminClientesRouteChildren {
+  AuthenticatedAdminClientesIdCronogramaRoute: typeof AuthenticatedAdminClientesIdCronogramaRoute
+}
+
+const AuthenticatedAdminClientesRouteChildren: AuthenticatedAdminClientesRouteChildren =
+  {
+    AuthenticatedAdminClientesIdCronogramaRoute:
+      AuthenticatedAdminClientesIdCronogramaRoute,
+  }
+
+const AuthenticatedAdminClientesRouteWithChildren =
+  AuthenticatedAdminClientesRoute._addFileChildren(
+    AuthenticatedAdminClientesRouteChildren,
+  )
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAgendaRoute: typeof AuthenticatedAdminAgendaRoute
   AuthenticatedAdminAgendamentosRoute: typeof AuthenticatedAdminAgendamentosRoute
   AuthenticatedAdminBloqueiosRoute: typeof AuthenticatedAdminBloqueiosRoute
-  AuthenticatedAdminClientesRoute: typeof AuthenticatedAdminClientesRoute
+  AuthenticatedAdminClientesRoute: typeof AuthenticatedAdminClientesRouteWithChildren
   AuthenticatedAdminConfiguracoesRoute: typeof AuthenticatedAdminConfiguracoesRoute
   AuthenticatedAdminFinanceiroRoute: typeof AuthenticatedAdminFinanceiroRoute
   AuthenticatedAdminProfissionaisRoute: typeof AuthenticatedAdminProfissionaisRoute
@@ -440,7 +475,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAgendaRoute: AuthenticatedAdminAgendaRoute,
   AuthenticatedAdminAgendamentosRoute: AuthenticatedAdminAgendamentosRoute,
   AuthenticatedAdminBloqueiosRoute: AuthenticatedAdminBloqueiosRoute,
-  AuthenticatedAdminClientesRoute: AuthenticatedAdminClientesRoute,
+  AuthenticatedAdminClientesRoute: AuthenticatedAdminClientesRouteWithChildren,
   AuthenticatedAdminConfiguracoesRoute: AuthenticatedAdminConfiguracoesRoute,
   AuthenticatedAdminFinanceiroRoute: AuthenticatedAdminFinanceiroRoute,
   AuthenticatedAdminProfissionaisRoute: AuthenticatedAdminProfissionaisRoute,

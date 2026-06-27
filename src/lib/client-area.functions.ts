@@ -312,3 +312,93 @@ export const getMyRecommendations = createServerFn({ method: "GET" })
     if (error) throw error;
     return data ?? [];
   });
+
+/* ---------- Cronograma Geral (Manutenções) ---------- */
+
+export const getMyMaintenances = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const sb = context.supabase;
+    const mine = await sb
+      .from("clients")
+      .select("id")
+      .eq("auth_user_id", context.userId)
+      .maybeSingle();
+    if (!mine.data) return [];
+    const { data, error } = await sb
+      .from("client_maintenances")
+      .select("*, booking:bookings(id,status)")
+      .eq("client_id", mine.data.id)
+      .order("scheduled_date", { ascending: true });
+    if (error) throw error;
+    return data ?? [];
+  });
+
+export const replyMyMaintenance = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({ id: z.string().uuid(), status: z.enum(["confirmed", "refused"]) }).parse(d)
+  )
+  .handler(async ({ context, data }) => {
+    const sb = context.supabase;
+    
+    // Validate ownership
+    const mine = await sb
+      .from("clients")
+      .select("id")
+      .eq("auth_user_id", context.userId)
+      .maybeSingle();
+    if (!mine.data) throw new Error("Cadastro não vinculado");
+
+    const maint = await sb.from("client_maintenances").select("*").eq("id", data.id).single();
+    if (maint.error || !maint.data) throw new Error("Manutenção não encontrada");
+    if (maint.data.client_id !== mine.data.id) throw new Error("Sem permissão");
+    
+    let bookingId = maint.data.booking_id;
+    if (data.status === "confirmed" && !bookingId) {
+       // auto create booking using arbitrary service/professional to fulfill existing flow
+       const s = await sb.from("services").select("id, price").limit(1).single();
+       const p = await sb.from("professionals").select("id").limit(1).single();
+       if (s.data && p.data) {
+           let start = maint.data.suggested_time;
+           if (!start) start = "09:00:00";
+           // Ensure start time is in HH:mm format for booking
+           const startTimeStr = start.substring(0, 5);
+           
+           // calculate end time (e.g. + 1 hour)
+           let endH = parseInt(startTimeStr.split(":")[0]) + 1;
+           const endM = startTimeStr.split(":")[1];
+           const endTimeStr = `${endH.toString().padStart(2, '0')}:${endM}`;
+
+           const bData = {
+               client_id: maint.data.client_id,
+               service_id: s.data.id,
+               professional_id: p.data.id,
+               scheduled_date: maint.data.scheduled_date,
+               start_time: startTimeStr,
+               end_time: endTimeStr,
+               status: "confirmed" as const,
+               code: Math.random().toString(36).substring(2, 8).toUpperCase(),
+               deposit_amount: 0,
+               remaining_amount: s.data.price,
+               deposit_paid: false,
+               notes: "Auto-gerado a partir do cronograma: " + maint.data.procedure_name
+           };
+           const bIns = await sb.from("bookings").insert(bData).select("id").single();
+           if (bIns.data) {
+               bookingId = bIns.data.id;
+               console.log("NOTIFICAÇÃO: WhatsApp/Email enviado para confirmação do agendamento", bIns.data.id);
+           }
+       }
+    } else if (data.status === "refused") {
+       console.log("NOTIFICAÇÃO: Administrador avisado sobre recusa de manutenção", maint.data.id);
+    }
+    
+    const { error } = await sb.from("client_maintenances").update({ 
+       status: data.status,
+       booking_id: bookingId 
+    }).eq("id", data.id);
+    if (error) throw error;
+    
+    return { ok: true };
+  });

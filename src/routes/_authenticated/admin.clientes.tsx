@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { MessageCircle, Plus, Pencil, Trash2, History, X } from "lucide-react";
+import { MessageCircle, Plus, Pencil, Trash2, History, X, CalendarDays } from "lucide-react";
 import { toast } from "sonner";
 import {
   adminListClients,
@@ -131,6 +131,9 @@ function ClientsPage() {
                 </td>
                 <td className="px-4 py-3 text-right">
                   <div className="inline-flex gap-1">
+                    <Link to={`/admin/clientes/${c.id}/cronograma`} className="rounded-md p-1.5 hover:bg-secondary" title="Cronograma">
+                      <CalendarDays className="h-4 w-4" />
+                    </Link>
                     <button onClick={() => setHistoryOf(c as Client)} className="rounded-md p-1.5 hover:bg-secondary" title="Histórico">
                       <History className="h-4 w-4" />
                     </button>
