@@ -57,13 +57,17 @@ function ClientsPage() {
   });
 
   async function onDelete(c: Client) {
-    if (!confirm(`Excluir ${c.name}?`)) return;
+    if (!confirm(`Excluir ${c.name}? Se houver histórico, o cadastro será arquivado.`)) return;
     try {
-      await remove({ data: { id: c.id } });
-      toast.success("Cliente removido.");
+      const res = await remove({ data: { id: c.id } });
+      toast.success(
+        res?.mode === "archived"
+          ? "Cliente arquivado (tinha histórico de atendimentos)."
+          : "Cliente removido.",
+      );
       qc.invalidateQueries({ queryKey: ["adminClients"] });
     } catch (e: any) {
-      toast.error(e.message);
+      toast.error(e?.message ?? "Não foi possível excluir o cliente.");
     }
   }
 
