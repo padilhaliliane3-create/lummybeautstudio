@@ -136,6 +136,9 @@ function ClientsPage() {
                 </td>
                 <td className="px-4 py-3 text-right">
                   <div className="inline-flex gap-1">
+                    <Link to={`/admin/clientes/${c.id}` as any} className="rounded-md p-1.5 hover:bg-secondary" title="Perfil 360 (anamnese, fotos, avisos)">
+                      <History className="h-4 w-4 text-gold" />
+                    </Link>
                     <Link to={`/admin/clientes/${c.id}/cronograma`} className="rounded-md p-1.5 hover:bg-secondary" title="Cronograma">
                       <CalendarDays className="h-4 w-4" />
                     </Link>

@@ -24,6 +24,8 @@ export type Database = {
           end_time: string
           id: string
           notes: string | null
+          post_notes: string | null
+          products_used: string | null
           professional_id: string
           remaining_amount: number
           scheduled_date: string
@@ -42,6 +44,8 @@ export type Database = {
           end_time: string
           id?: string
           notes?: string | null
+          post_notes?: string | null
+          products_used?: string | null
           professional_id: string
           remaining_amount: number
           scheduled_date: string
@@ -60,6 +64,8 @@ export type Database = {
           end_time?: string
           id?: string
           notes?: string | null
+          post_notes?: string | null
+          products_used?: string | null
           professional_id?: string
           remaining_amount?: number
           scheduled_date?: string
@@ -126,6 +132,103 @@ export type Database = {
         }
         Relationships: []
       }
+      client_anamnesis: {
+        Row: {
+          allergies: string | null
+          client_id: string
+          created_at: string
+          hair_chemistry: string | null
+          hair_treatments: string | null
+          hair_type: string | null
+          health_conditions: string | null
+          id: string
+          medications: string | null
+          nail_condition: string | null
+          notes: string | null
+          preferences: string | null
+          scalp_condition: string | null
+          updated_at: string
+        }
+        Insert: {
+          allergies?: string | null
+          client_id: string
+          created_at?: string
+          hair_chemistry?: string | null
+          hair_treatments?: string | null
+          hair_type?: string | null
+          health_conditions?: string | null
+          id?: string
+          medications?: string | null
+          nail_condition?: string | null
+          notes?: string | null
+          preferences?: string | null
+          scalp_condition?: string | null
+          updated_at?: string
+        }
+        Update: {
+          allergies?: string | null
+          client_id?: string
+          created_at?: string
+          hair_chemistry?: string | null
+          hair_treatments?: string | null
+          hair_type?: string | null
+          health_conditions?: string | null
+          id?: string
+          medications?: string | null
+          nail_condition?: string | null
+          notes?: string | null
+          preferences?: string | null
+          scalp_condition?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_anamnesis_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: true
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_evolution_photos: {
+        Row: {
+          caption: string | null
+          client_id: string
+          created_at: string
+          id: string
+          storage_path: string
+          tag: string | null
+          taken_at: string
+        }
+        Insert: {
+          caption?: string | null
+          client_id: string
+          created_at?: string
+          id?: string
+          storage_path: string
+          tag?: string | null
+          taken_at?: string
+        }
+        Update: {
+          caption?: string | null
+          client_id?: string
+          created_at?: string
+          id?: string
+          storage_path?: string
+          tag?: string | null
+          taken_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_evolution_photos_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_maintenances: {
         Row: {
           booking_id: string | null
@@ -176,6 +279,47 @@ export type Database = {
           },
           {
             foreignKeyName: "client_maintenances_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_notifications: {
+        Row: {
+          body: string | null
+          client_id: string
+          created_at: string
+          id: string
+          kind: string
+          link: string | null
+          read_at: string | null
+          title: string
+        }
+        Insert: {
+          body?: string | null
+          client_id: string
+          created_at?: string
+          id?: string
+          kind?: string
+          link?: string | null
+          read_at?: string | null
+          title: string
+        }
+        Update: {
+          body?: string | null
+          client_id?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          link?: string | null
+          read_at?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_notifications_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "clients"

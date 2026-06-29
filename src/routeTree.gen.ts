@@ -18,7 +18,10 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedClienteIndexRouteImport } from './routes/_authenticated/cliente.index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedClientePerfilRouteImport } from './routes/_authenticated/cliente.perfil'
+import { Route as AuthenticatedClienteNotificacoesRouteImport } from './routes/_authenticated/cliente.notificacoes'
+import { Route as AuthenticatedClienteEvolucaoRouteImport } from './routes/_authenticated/cliente.evolucao'
 import { Route as AuthenticatedClienteCronogramaRouteImport } from './routes/_authenticated/cliente.cronograma'
+import { Route as AuthenticatedClienteAnamneseRouteImport } from './routes/_authenticated/cliente.anamnese'
 import { Route as AuthenticatedClienteAgendamentosRouteImport } from './routes/_authenticated/cliente.agendamentos'
 import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated/admin.usuarios'
 import { Route as AuthenticatedAdminServicosRouteImport } from './routes/_authenticated/admin.servicos'
@@ -29,6 +32,7 @@ import { Route as AuthenticatedAdminClientesRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminBloqueiosRouteImport } from './routes/_authenticated/admin.bloqueios'
 import { Route as AuthenticatedAdminAgendamentosRouteImport } from './routes/_authenticated/admin.agendamentos'
 import { Route as AuthenticatedAdminAgendaRouteImport } from './routes/_authenticated/admin.agenda'
+import { Route as AuthenticatedAdminClientesIdRouteImport } from './routes/_authenticated/admin.clientes.$id'
 import { Route as AuthenticatedAdminClientesIdCronogramaRouteImport } from './routes/_authenticated/admin.clientes.$id.cronograma'
 
 const AuthRoute = AuthRouteImport.update({
@@ -77,10 +81,28 @@ const AuthenticatedClientePerfilRoute =
     path: '/perfil',
     getParentRoute: () => AuthenticatedClienteRoute,
   } as any)
+const AuthenticatedClienteNotificacoesRoute =
+  AuthenticatedClienteNotificacoesRouteImport.update({
+    id: '/notificacoes',
+    path: '/notificacoes',
+    getParentRoute: () => AuthenticatedClienteRoute,
+  } as any)
+const AuthenticatedClienteEvolucaoRoute =
+  AuthenticatedClienteEvolucaoRouteImport.update({
+    id: '/evolucao',
+    path: '/evolucao',
+    getParentRoute: () => AuthenticatedClienteRoute,
+  } as any)
 const AuthenticatedClienteCronogramaRoute =
   AuthenticatedClienteCronogramaRouteImport.update({
     id: '/cronograma',
     path: '/cronograma',
+    getParentRoute: () => AuthenticatedClienteRoute,
+  } as any)
+const AuthenticatedClienteAnamneseRoute =
+  AuthenticatedClienteAnamneseRouteImport.update({
+    id: '/anamnese',
+    path: '/anamnese',
     getParentRoute: () => AuthenticatedClienteRoute,
   } as any)
 const AuthenticatedClienteAgendamentosRoute =
@@ -143,11 +165,17 @@ const AuthenticatedAdminAgendaRoute =
     path: '/agenda',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminClientesIdRoute =
+  AuthenticatedAdminClientesIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminClientesRoute,
+  } as any)
 const AuthenticatedAdminClientesIdCronogramaRoute =
   AuthenticatedAdminClientesIdCronogramaRouteImport.update({
-    id: '/$id/cronograma',
-    path: '/$id/cronograma',
-    getParentRoute: () => AuthenticatedAdminClientesRoute,
+    id: '/cronograma',
+    path: '/cronograma',
+    getParentRoute: () => AuthenticatedAdminClientesIdRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -166,10 +194,14 @@ export interface FileRoutesByFullPath {
   '/admin/servicos': typeof AuthenticatedAdminServicosRoute
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/cliente/agendamentos': typeof AuthenticatedClienteAgendamentosRoute
+  '/cliente/anamnese': typeof AuthenticatedClienteAnamneseRoute
   '/cliente/cronograma': typeof AuthenticatedClienteCronogramaRoute
+  '/cliente/evolucao': typeof AuthenticatedClienteEvolucaoRoute
+  '/cliente/notificacoes': typeof AuthenticatedClienteNotificacoesRoute
   '/cliente/perfil': typeof AuthenticatedClientePerfilRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/cliente/': typeof AuthenticatedClienteIndexRoute
+  '/admin/clientes/$id': typeof AuthenticatedAdminClientesIdRouteWithChildren
   '/admin/clientes/$id/cronograma': typeof AuthenticatedAdminClientesIdCronogramaRoute
 }
 export interface FileRoutesByTo {
@@ -186,10 +218,14 @@ export interface FileRoutesByTo {
   '/admin/servicos': typeof AuthenticatedAdminServicosRoute
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/cliente/agendamentos': typeof AuthenticatedClienteAgendamentosRoute
+  '/cliente/anamnese': typeof AuthenticatedClienteAnamneseRoute
   '/cliente/cronograma': typeof AuthenticatedClienteCronogramaRoute
+  '/cliente/evolucao': typeof AuthenticatedClienteEvolucaoRoute
+  '/cliente/notificacoes': typeof AuthenticatedClienteNotificacoesRoute
   '/cliente/perfil': typeof AuthenticatedClientePerfilRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/cliente': typeof AuthenticatedClienteIndexRoute
+  '/admin/clientes/$id': typeof AuthenticatedAdminClientesIdRouteWithChildren
   '/admin/clientes/$id/cronograma': typeof AuthenticatedAdminClientesIdCronogramaRoute
 }
 export interface FileRoutesById {
@@ -210,10 +246,14 @@ export interface FileRoutesById {
   '/_authenticated/admin/servicos': typeof AuthenticatedAdminServicosRoute
   '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/_authenticated/cliente/agendamentos': typeof AuthenticatedClienteAgendamentosRoute
+  '/_authenticated/cliente/anamnese': typeof AuthenticatedClienteAnamneseRoute
   '/_authenticated/cliente/cronograma': typeof AuthenticatedClienteCronogramaRoute
+  '/_authenticated/cliente/evolucao': typeof AuthenticatedClienteEvolucaoRoute
+  '/_authenticated/cliente/notificacoes': typeof AuthenticatedClienteNotificacoesRoute
   '/_authenticated/cliente/perfil': typeof AuthenticatedClientePerfilRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/cliente/': typeof AuthenticatedClienteIndexRoute
+  '/_authenticated/admin/clientes/$id': typeof AuthenticatedAdminClientesIdRouteWithChildren
   '/_authenticated/admin/clientes/$id/cronograma': typeof AuthenticatedAdminClientesIdCronogramaRoute
 }
 export interface FileRouteTypes {
@@ -234,10 +274,14 @@ export interface FileRouteTypes {
     | '/admin/servicos'
     | '/admin/usuarios'
     | '/cliente/agendamentos'
+    | '/cliente/anamnese'
     | '/cliente/cronograma'
+    | '/cliente/evolucao'
+    | '/cliente/notificacoes'
     | '/cliente/perfil'
     | '/admin/'
     | '/cliente/'
+    | '/admin/clientes/$id'
     | '/admin/clientes/$id/cronograma'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -254,10 +298,14 @@ export interface FileRouteTypes {
     | '/admin/servicos'
     | '/admin/usuarios'
     | '/cliente/agendamentos'
+    | '/cliente/anamnese'
     | '/cliente/cronograma'
+    | '/cliente/evolucao'
+    | '/cliente/notificacoes'
     | '/cliente/perfil'
     | '/admin'
     | '/cliente'
+    | '/admin/clientes/$id'
     | '/admin/clientes/$id/cronograma'
   id:
     | '__root__'
@@ -277,10 +325,14 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/servicos'
     | '/_authenticated/admin/usuarios'
     | '/_authenticated/cliente/agendamentos'
+    | '/_authenticated/cliente/anamnese'
     | '/_authenticated/cliente/cronograma'
+    | '/_authenticated/cliente/evolucao'
+    | '/_authenticated/cliente/notificacoes'
     | '/_authenticated/cliente/perfil'
     | '/_authenticated/admin/'
     | '/_authenticated/cliente/'
+    | '/_authenticated/admin/clientes/$id'
     | '/_authenticated/admin/clientes/$id/cronograma'
   fileRoutesById: FileRoutesById
 }
@@ -356,11 +408,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedClientePerfilRouteImport
       parentRoute: typeof AuthenticatedClienteRoute
     }
+    '/_authenticated/cliente/notificacoes': {
+      id: '/_authenticated/cliente/notificacoes'
+      path: '/notificacoes'
+      fullPath: '/cliente/notificacoes'
+      preLoaderRoute: typeof AuthenticatedClienteNotificacoesRouteImport
+      parentRoute: typeof AuthenticatedClienteRoute
+    }
+    '/_authenticated/cliente/evolucao': {
+      id: '/_authenticated/cliente/evolucao'
+      path: '/evolucao'
+      fullPath: '/cliente/evolucao'
+      preLoaderRoute: typeof AuthenticatedClienteEvolucaoRouteImport
+      parentRoute: typeof AuthenticatedClienteRoute
+    }
     '/_authenticated/cliente/cronograma': {
       id: '/_authenticated/cliente/cronograma'
       path: '/cronograma'
       fullPath: '/cliente/cronograma'
       preLoaderRoute: typeof AuthenticatedClienteCronogramaRouteImport
+      parentRoute: typeof AuthenticatedClienteRoute
+    }
+    '/_authenticated/cliente/anamnese': {
+      id: '/_authenticated/cliente/anamnese'
+      path: '/anamnese'
+      fullPath: '/cliente/anamnese'
+      preLoaderRoute: typeof AuthenticatedClienteAnamneseRouteImport
       parentRoute: typeof AuthenticatedClienteRoute
     }
     '/_authenticated/cliente/agendamentos': {
@@ -433,24 +506,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAgendaRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/clientes/$id': {
+      id: '/_authenticated/admin/clientes/$id'
+      path: '/$id'
+      fullPath: '/admin/clientes/$id'
+      preLoaderRoute: typeof AuthenticatedAdminClientesIdRouteImport
+      parentRoute: typeof AuthenticatedAdminClientesRoute
+    }
     '/_authenticated/admin/clientes/$id/cronograma': {
       id: '/_authenticated/admin/clientes/$id/cronograma'
-      path: '/$id/cronograma'
+      path: '/cronograma'
       fullPath: '/admin/clientes/$id/cronograma'
       preLoaderRoute: typeof AuthenticatedAdminClientesIdCronogramaRouteImport
-      parentRoute: typeof AuthenticatedAdminClientesRoute
+      parentRoute: typeof AuthenticatedAdminClientesIdRoute
     }
   }
 }
 
-interface AuthenticatedAdminClientesRouteChildren {
+interface AuthenticatedAdminClientesIdRouteChildren {
   AuthenticatedAdminClientesIdCronogramaRoute: typeof AuthenticatedAdminClientesIdCronogramaRoute
+}
+
+const AuthenticatedAdminClientesIdRouteChildren: AuthenticatedAdminClientesIdRouteChildren =
+  {
+    AuthenticatedAdminClientesIdCronogramaRoute:
+      AuthenticatedAdminClientesIdCronogramaRoute,
+  }
+
+const AuthenticatedAdminClientesIdRouteWithChildren =
+  AuthenticatedAdminClientesIdRoute._addFileChildren(
+    AuthenticatedAdminClientesIdRouteChildren,
+  )
+
+interface AuthenticatedAdminClientesRouteChildren {
+  AuthenticatedAdminClientesIdRoute: typeof AuthenticatedAdminClientesIdRouteWithChildren
 }
 
 const AuthenticatedAdminClientesRouteChildren: AuthenticatedAdminClientesRouteChildren =
   {
-    AuthenticatedAdminClientesIdCronogramaRoute:
-      AuthenticatedAdminClientesIdCronogramaRoute,
+    AuthenticatedAdminClientesIdRoute:
+      AuthenticatedAdminClientesIdRouteWithChildren,
   }
 
 const AuthenticatedAdminClientesRouteWithChildren =
@@ -489,14 +584,20 @@ const AuthenticatedAdminRouteWithChildren =
 
 interface AuthenticatedClienteRouteChildren {
   AuthenticatedClienteAgendamentosRoute: typeof AuthenticatedClienteAgendamentosRoute
+  AuthenticatedClienteAnamneseRoute: typeof AuthenticatedClienteAnamneseRoute
   AuthenticatedClienteCronogramaRoute: typeof AuthenticatedClienteCronogramaRoute
+  AuthenticatedClienteEvolucaoRoute: typeof AuthenticatedClienteEvolucaoRoute
+  AuthenticatedClienteNotificacoesRoute: typeof AuthenticatedClienteNotificacoesRoute
   AuthenticatedClientePerfilRoute: typeof AuthenticatedClientePerfilRoute
   AuthenticatedClienteIndexRoute: typeof AuthenticatedClienteIndexRoute
 }
 
 const AuthenticatedClienteRouteChildren: AuthenticatedClienteRouteChildren = {
   AuthenticatedClienteAgendamentosRoute: AuthenticatedClienteAgendamentosRoute,
+  AuthenticatedClienteAnamneseRoute: AuthenticatedClienteAnamneseRoute,
   AuthenticatedClienteCronogramaRoute: AuthenticatedClienteCronogramaRoute,
+  AuthenticatedClienteEvolucaoRoute: AuthenticatedClienteEvolucaoRoute,
+  AuthenticatedClienteNotificacoesRoute: AuthenticatedClienteNotificacoesRoute,
   AuthenticatedClientePerfilRoute: AuthenticatedClientePerfilRoute,
   AuthenticatedClienteIndexRoute: AuthenticatedClienteIndexRoute,
 }
