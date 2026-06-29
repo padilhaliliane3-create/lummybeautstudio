@@ -19,6 +19,7 @@ export const adminListClients = createServerFn({ method: "GET" })
     const { data, error } = await context.supabase
       .from("clients")
       .select("*")
+      .is("archived_at", null)
       .order("created_at", { ascending: false })
       .limit(500);
     if (error) throw error;
