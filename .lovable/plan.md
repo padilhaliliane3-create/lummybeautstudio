@@ -1,61 +1,48 @@
-# Fase 3 + Módulo Financeiro
+## Escopo
 
-Vou entregar as duas frentes em sequência, na mesma leva de migrações para evitar idas e voltas.
+A solicitação tem duas naturezas muito diferentes:
 
-## 1. Banco de dados (uma migração só)
+**A) Correções rápidas** (faço imediatamente, sem fases)
+1. **Excluir cliente não funciona** — investigar o handler `adminDeleteClient` e o botão na tela `/admin/clientes`. Provavelmente erro silencioso por FK (bookings/hair_schedules referenciam clients). Solução: tratar erro, mostrar toast e, quando houver agendamentos, oferecer "arquivar" (soft delete) em vez de DELETE físico.
+2. **Data de cadastro D-1** — o banco grava `created_at` em UTC (correto), mas a UI formata sem timezone, então 22h de Brasília vira "dia anterior". Vou padronizar a formatação em pt-BR com `timeZone: "America/Sao_Paulo"` em todas as telas que mostram datas de cliente/agendamento.
 
-Tabelas novas:
-- **`finance_entries`** — lançamentos manuais do financeiro
-  - `type` (`income` | `expense`), `category` (texto livre: "Produtos", "Aluguel", "Comissão"...), `amount`, `description`, `entry_date`, `payment_method`, `booking_id` (opcional, para vincular a um agendamento), `created_by`.
-- **`hair_schedules`** — cronograma capilar por cliente
-  - `client_id`, `step_type` (`hidratacao` | `nutricao` | `reconstrucao`), `scheduled_date`, `done` (bool), `notes`.
-- **`client_recommendations`** — recomendações geradas pelo admin
-  - `client_id`, `title`, `body`, `created_by`.
+**B) 13 grandes módulos novos** (Dashboard cliente, Galeria de evolução, Histórico detalhado, Anamnese, Produtos recomendados, Lembretes automáticos, Lista de espera, Agenda inteligente, Financeiro do cliente, Fidelidade, Planos/assinaturas, Centro de notificações, Fluxo de confirmação).
 
-Ajustes:
-- Adicionar coluna `auth_user_id uuid` em `clients` para ligar conta logada ao cadastro (UNIQUE, nullable).
-- View/leitura: receita do financeiro inclui **agendamentos `completed`** (preço cheio) somados a `finance_entries.income`, menos `finance_entries.expense`.
+Isto é, na prática, **outro sistema do tamanho do atual**. Tentar entregar tudo numa única rodada vai gerar código frágil, schema mal pensado e regressões nas correções A). Proponho dividir em **4 fases incrementais**, cada uma entregando valor real e testável.
 
-RLS:
-- Cliente lê/edita só os próprios dados (`clients.auth_user_id = auth.uid()`), incluindo bookings, hair_schedules e recommendations vinculados.
-- Admin total. Financeiro: só admin.
+## Fases propostas
 
-## 2. Área do Cliente (`/_cliente/*`)
+### Fase 0 — Correções (faço já, nesta rodada)
+- Corrigir exclusão de cliente (soft delete quando houver vínculos).
+- Padronizar timezone `America/Sao_Paulo` em datas exibidas.
+- Corrigir o hydration warning de `/auth` que apareceu nos logs.
 
-Layout próprio, separado do `/admin`, com header da marca e tema claro/escuro.
+### Fase 1 — Fundação do "Cliente 360"
+Cobre itens **1, 2, 3, 4, 5, 12** (Dashboard, Evolução com fotos, Histórico, Anamnese, Recomendações, Notificações internas).
+- Tabelas novas: `client_anamnesis`, `client_evolution_photos`, `client_notifications`, expansão de `bookings` (produtos usados, observações pós-atendimento).
+- Bucket Storage `client-photos` (privado, RLS por client/admin).
+- Dashboard `/cliente` reformulado com cards: próximo agendamento, última visita, total de procedimentos, próxima manutenção, avisos.
+- Centro de notificações com contador no header.
 
-Rotas:
-- **`/_cliente`** (gate): se logado e `clients.auth_user_id` não estiver setado, oferece "vincular meu cadastro" via WhatsApp/CPF.
-- **`/_cliente/`** — dashboard: próximo agendamento, próximo passo do cronograma, recomendações ativas.
-- **`/_cliente/agendamentos`** — histórico + futuros, com ações (cancelar se >24h, reagendar = atalho `/agendar`).
-- **`/_cliente/cronograma`** — cronograma capilar visual (hidratação/nutrição/reconstrução), marcar como feito, sugestão automática do próximo ciclo (toda hidratação 7d, nutrição 15d, reconstrução 30d — config padrão).
-- **`/_cliente/perfil`** — editar dados pessoais (CPF, nascimento, endereço, foto opcional).
+### Fase 2 — Automação de retenção
+Cobre itens **6, 7, 8, 13** (Lembretes automáticos, Lista de espera, Agenda inteligente, Fluxo de confirmação).
+- Cron via `pg_cron` chamando rota `/api/public/hooks/run-reminders` (gera links wa.me prontos no painel admin — wa.me é semi-manual como combinamos).
+- Tabela `waitlist` + worker que dispara quando um booking vira `cancelled`.
+- Sugestão automática da próxima data ao confirmar manutenção.
+- Fluxo "Confirmar / Não posso" no painel do cliente, com reagendamento.
 
-Login do cliente: reaproveita `/auth` (mesma tela). Após login, se vier de fluxo de cliente vai pra `/cliente`; se admin, pra `/admin`. Decide pelo `has_role`.
+### Fase 3 — Comercial
+Cobre itens **9, 10, 11** (Financeiro do cliente, Fidelidade, Planos).
+- Já temos `finance_entries`; criar view `client_financials`.
+- Tabelas `loyalty_rules`, `loyalty_points`, `loyalty_redemptions`.
+- Tabelas `plans`, `client_subscriptions`, `subscription_usage`.
+- Telas no admin (CRUD) e no cliente (consulta).
 
-## 3. Módulo Financeiro (`/admin/financeiro`)
+## O que eu preciso de você para seguir
 
-Subseções via tabs:
-- **Dashboard**: cards (Receita mês, Despesas mês, Lucro, Ticket médio), gráfico de barras receita x despesa (últimos 6 meses) usando `recharts`.
-- **Lançamentos**: tabela com filtros (período, tipo, categoria), CRUD (modal), import automático de agendamentos `completed` como receita (toggle "ver com agendamentos").
-- **Fluxo de Caixa**: lista diária acumulada com saldo, exportar CSV.
-- **Categorias**: gestão simples (lista de strings sugeridas, salvas em `salon_settings.finance_categories` jsonb).
+1. **Aprovar Fase 0 já** (correções) — faço em seguida sem nova confirmação.
+2. **Confirmar a ordem das fases** (1 → 2 → 3) ou pedir reordenação. Cada fase leva várias rodadas de prompt; ao final de cada uma eu paro para você validar antes de abrir a próxima.
+3. **WhatsApp/E-mail dos lembretes**: mantemos wa.me semi-manual (como já está) e sem e-mail, certo? Ou agora quer ativar e-mail via Lovable Emails (precisa subdomínio)?
+4. **Fidelidade**: regra inicial padrão (ex.: 1 ponto por R$ 1 gasto, níveis Bronze 0+, Prata 500+, Ouro 1500+) ou você quer definir antes?
 
-Server fns novas em `src/lib/finance.functions.ts`:
-- `adminListFinanceEntries(filters)`, `adminSaveFinanceEntry`, `adminDeleteFinanceEntry`, `adminFinanceSummary({from,to})`.
-
-## 4. Itens transversais
-
-- Item de menu no admin sidebar: "Financeiro".
-- Link "Área do Cliente" no header público (`SiteShell`) quando logado como cliente.
-- Após criar agendamento em `/agendar`, se usuário estiver logado, auto-linkar `clients.auth_user_id`.
-
-## Ordem de execução
-
-1. Migração única (tabelas + RLS + coluna em `clients`).
-2. `finance.functions.ts` + rota `/admin/financeiro` (com tabs).
-3. `client.functions.ts` (cronograma, recomendações, vincular conta) + layout `/_cliente`.
-4. Páginas do cliente (dashboard, agendamentos, cronograma, perfil).
-5. Ajustes no `SiteShell` e `/agendar` (auto-link).
-
-Sigo direto?
+Assim que você responder, executo a Fase 0 imediatamente e já abro a Fase 1.
