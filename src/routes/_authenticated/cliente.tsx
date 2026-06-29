@@ -5,19 +5,30 @@ import { supabase } from "@/integrations/supabase/client";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeProvider";
 import { getMyClient } from "@/lib/client-area.functions";
-import { LayoutDashboard, CalendarCheck, Sparkles, UserCircle2, LogOut } from "lucide-react";
+import { getMyUnreadCount } from "@/lib/cliente360.functions";
+import {
+  LayoutDashboard,
+  CalendarCheck,
+  Sparkles,
+  UserCircle2,
+  LogOut,
+  FileText,
+  Image as ImageIcon,
+  Bell,
+} from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/cliente")({
   component: ClienteLayout,
 });
 
-
-
 const nav = [
   { to: "/cliente", label: "Início", icon: LayoutDashboard, exact: true },
-  { to: "/cliente/agendamentos", label: "Meus agendamentos", icon: CalendarCheck },
-  { to: "/cliente/cronograma", label: "Cronograma capilar", icon: Sparkles },
-  { to: "/cliente/perfil", label: "Meu perfil", icon: UserCircle2 },
+  { to: "/cliente/agendamentos", label: "Agendamentos", icon: CalendarCheck },
+  { to: "/cliente/cronograma", label: "Cronograma", icon: Sparkles },
+  { to: "/cliente/evolucao", label: "Evolução", icon: ImageIcon },
+  { to: "/cliente/anamnese", label: "Anamnese", icon: FileText },
+  { to: "/cliente/notificacoes", label: "Avisos", icon: Bell },
+  { to: "/cliente/perfil", label: "Perfil", icon: UserCircle2 },
 ];
 
 function ClienteLayout() {
