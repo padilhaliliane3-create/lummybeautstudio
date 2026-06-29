@@ -311,7 +311,7 @@ function HistoryModal({ client, onClose }: { client: Client; onClose: () => void
                 </div>
                 <div className="text-right">
                   <div className="font-mono text-xs">
-                    {new Date(b.scheduled_date).toLocaleDateString("pt-BR")} · {b.start_time?.slice(0, 5)}
+                    {formatBrDateOnly(b.scheduled_date)} · {formatBrTime(b.start_time)}
                   </div>
                   <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{b.status}</div>
                 </div>
