@@ -132,7 +132,7 @@ function ClientsPage() {
                 </td>
                 <td className="px-4 py-3 hidden md:table-cell text-muted-foreground">{c.email ?? "—"}</td>
                 <td className="px-4 py-3 hidden md:table-cell text-xs text-muted-foreground">
-                  {new Date(c.created_at).toLocaleDateString("pt-BR")}
+                  {formatBrDate(c.created_at)}
                 </td>
                 <td className="px-4 py-3 text-right">
                   <div className="inline-flex gap-1">
