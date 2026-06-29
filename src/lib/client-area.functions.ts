@@ -379,6 +379,7 @@ export const replyMyMaintenance = createServerFn({ method: "POST" })
                end_time: endTimeStr,
                status: "confirmed" as const,
                code: Math.random().toString(36).substring(2, 8).toUpperCase(),
+               total_price: s.data.price,
                deposit_amount: 0,
                remaining_amount: s.data.price,
                deposit_paid: false,

@@ -17,6 +17,7 @@ import {
   isValidBrPhone,
   formatBrFromE164,
 } from "@/lib/phone";
+import { formatBrDate, formatBrDateOnly, formatBrTime } from "@/lib/date";
 
 export const Route = createFileRoute("/_authenticated/admin/clientes")({
   component: ClientsPage,
@@ -56,13 +57,17 @@ function ClientsPage() {
   });
 
   async function onDelete(c: Client) {
-    if (!confirm(`Excluir ${c.name}?`)) return;
+    if (!confirm(`Excluir ${c.name}? Se houver histórico, o cadastro será arquivado.`)) return;
     try {
-      await remove({ data: { id: c.id } });
-      toast.success("Cliente removido.");
+      const res = await remove({ data: { id: c.id } });
+      toast.success(
+        res?.mode === "archived"
+          ? "Cliente arquivado (tinha histórico de atendimentos)."
+          : "Cliente removido.",
+      );
       qc.invalidateQueries({ queryKey: ["adminClients"] });
     } catch (e: any) {
-      toast.error(e.message);
+      toast.error(e?.message ?? "Não foi possível excluir o cliente.");
     }
   }
 
@@ -127,7 +132,7 @@ function ClientsPage() {
                 </td>
                 <td className="px-4 py-3 hidden md:table-cell text-muted-foreground">{c.email ?? "—"}</td>
                 <td className="px-4 py-3 hidden md:table-cell text-xs text-muted-foreground">
-                  {new Date(c.created_at).toLocaleDateString("pt-BR")}
+                  {formatBrDate(c.created_at)}
                 </td>
                 <td className="px-4 py-3 text-right">
                   <div className="inline-flex gap-1">
@@ -306,7 +311,7 @@ function HistoryModal({ client, onClose }: { client: Client; onClose: () => void
                 </div>
                 <div className="text-right">
                   <div className="font-mono text-xs">
-                    {new Date(b.scheduled_date).toLocaleDateString("pt-BR")} · {b.start_time?.slice(0, 5)}
+                    {formatBrDateOnly(b.scheduled_date)} · {formatBrTime(b.start_time)}
                   </div>
                   <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{b.status}</div>
                 </div>

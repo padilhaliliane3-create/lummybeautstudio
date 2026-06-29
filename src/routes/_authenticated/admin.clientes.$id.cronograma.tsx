@@ -16,7 +16,7 @@ export const Route = createFileRoute("/_authenticated/admin/clientes/$id/cronogr
 });
 
 function ClientScheduleAdminPage() {
-  const { id } = Route.useParams({ from: '/_authenticated/admin/clientes/$id/cronograma' });
+  const { id } = Route.useParams();
   const qc = useQueryClient();
   const list = useServerFn(adminListClientMaintenances);
   const save = useServerFn(adminSaveClientMaintenance);
