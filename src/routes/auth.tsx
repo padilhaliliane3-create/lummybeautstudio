@@ -5,6 +5,7 @@ import { lovable } from "@/integrations/lovable";
 import { Logo } from "@/components/Logo";
 
 export const Route = createFileRoute("/auth")({
+  ssr: false,
   head: () => ({ meta: [{ title: "Entrar · LUMMY Beauty Studio" }] }),
   component: AuthPage,
 });
