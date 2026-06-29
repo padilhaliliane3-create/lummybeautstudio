@@ -126,6 +126,63 @@ export type Database = {
         }
         Relationships: []
       }
+      client_maintenances: {
+        Row: {
+          booking_id: string | null
+          client_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          procedure_name: string
+          scheduled_date: string
+          status: string
+          suggested_time: string | null
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          booking_id?: string | null
+          client_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          procedure_name: string
+          scheduled_date: string
+          status?: string
+          suggested_time?: string | null
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string | null
+          client_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          procedure_name?: string
+          scheduled_date?: string
+          status?: string
+          suggested_time?: string | null
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_maintenances_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_maintenances_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_recommendations: {
         Row: {
           body: string | null
