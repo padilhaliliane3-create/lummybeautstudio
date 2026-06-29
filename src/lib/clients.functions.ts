@@ -70,7 +70,21 @@ export const adminDeleteClient = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ context, data }) => {
-    const { error } = await context.supabase.from("clients").delete().eq("id", data.id);
-    if (error) throw error;
-    return { ok: true };
+    const sb = context.supabase;
+    // tenta excluir; se houver vínculos (bookings/cronograma/etc.), arquiva.
+    const del = await sb.from("clients").delete().eq("id", data.id);
+    if (!del.error) return { ok: true, mode: "deleted" as const };
+
+    // 23503 = foreign_key_violation
+    const isFk =
+      (del.error as any)?.code === "23503" ||
+      /foreign key|violates/i.test(del.error.message ?? "");
+    if (!isFk) throw del.error;
+
+    const arch = await sb
+      .from("clients")
+      .update({ archived_at: new Date().toISOString() })
+      .eq("id", data.id);
+    if (arch.error) throw arch.error;
+    return { ok: true, mode: "archived" as const };
   });
